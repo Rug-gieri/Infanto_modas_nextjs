@@ -10,7 +10,8 @@
   --gold: #D4A847;
   --cream: #FDF8F3;
   --warm-white: #FFFBF7;
-  --charcoal: #1b8a1f;
+  --footer: #1b8a1f;
+  --charcoal: #3ca7ee;
   --soft-gray: #9A8A8A;
   --border: #F0E4E8;
 }
@@ -55,11 +56,55 @@ h3 {
   border-radius: 10px;
 }
 
-/* -------- NAVBAR -------- */
-.navbar {
+/* -------- STICKY HEADER -------- */
+.sticky-header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 200;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------- ANNOUNCEMENT BAR -------- */
+.announcement-bar {
+  display: block;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.announcement-bar:hover {
+  background-color: #1f2937;
+}
+
+.announcement-bar-content {
+  width: 100%;
+  max-width: 1536px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .announcement-bar-content {
+    font-size: 1rem;
+  }
+}
+
+.announcement-bar-link {
+  margin-left: 0.5rem;
+  text-decoration: underline;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* -------- NAVBAR -------- */
+.navbar {
   background: rgba(255, 251, 247, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -131,7 +176,7 @@ h3 {
 .navbar-links a {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--charcoal);
+  color: var(--soft-gray);
   text-decoration: none;
   transition: color 0.2s;
   position: relative;
@@ -970,7 +1015,7 @@ h3 {
 
 /* -------- FOOTER -------- */
 .footer {
-  background: var(--charcoal);
+  background: var(--footer);
   color: rgba(255, 255, 255, 0.7);
   padding: 2rem 2rem 2rem;
 }

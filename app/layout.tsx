@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import AnnouncementBar from './components/AnnouncementBar';
 
 
 export const metadata: Metadata = {
@@ -23,7 +24,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <Navbar />
+        <div className="sticky-header">
+          <AnnouncementBar />
+          <Navbar />
+        </div>
         <main>{children}</main>
         <Footer />
       </body>
