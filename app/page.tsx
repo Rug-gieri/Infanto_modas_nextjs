@@ -35,30 +35,30 @@ const brands = [
 
 const highlights = [
   {
-    emoji: '🌸',
+    image: '/conjunto_feminino_pink.jpg',
     badge: 'Novo',
-    name: 'Vestido Primavera',
+    name: 'Conjunto Feminino Pink',
     age: 'Para 2 a 6 anos',
     bg: 'linear-gradient(135deg,#FDE8EE,#F7C5D3)',
   },
   {
-    emoji: '🧸',
+    image: '/conjunto_menino_blue.jpg',
     badge: 'Mais vendido',
-    name: 'Conjunto Bebê Ursinho',
+    name: 'Conjunto Menino Azul',
     age: 'Para 0 a 18 meses',
     bg: 'linear-gradient(135deg,#E4F5F0,#C8EDE3)',
   },
   {
-    emoji: '⭐',
+    image: '/trico_beje.jpg',
     badge: 'Destaque',
-    name: 'Body Manga Longa',
+    name: 'Tricô Beje',
     age: 'Para 0 a 12 meses',
     bg: 'linear-gradient(135deg,#FDF8F3,#F0E4E8)',
   },
   {
-    emoji: '🎀',
+    image: '/trico_red.jpg',
     badge: 'Festa',
-    name: 'Vestido de Festa Rosa',
+    name: 'Tricô Vermelho',
     age: 'Para 4 a 10 anos',
     bg: 'linear-gradient(135deg,#FDE8EE,#E8D5F5)',
   },
@@ -264,9 +264,16 @@ export default function Home() {
           <div className="highlights-grid">
             {highlights.map((p, i) => (
               <div key={i} className="product-card">
-                <div className="product-image" style={{ background: p.bg }}>
-                  <span style={{ fontSize: '4rem' }}>{p.emoji}</span>
-                  <span className="product-badge">{p.badge}</span>
+                <div className="product-image" style={{ background: p.bg, position: 'relative', overflow: 'hidden' }}>
+                  {/* @ts-ignore - emoji is optional and image is our new field */}
+                  {p.image ? (
+                    // @ts-ignore
+                    <Image src={p.image} alt={p.name} fill style={{ objectFit: 'cover' }} />
+                  ) : (
+                    // @ts-ignore
+                    <span style={{ fontSize: '4rem' }}>{p.emoji}</span>
+                  )}
+                  <span className="product-badge" style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>{p.badge}</span>
                 </div>
                 <div className="product-info">
                   <div className="product-name">{p.name}</div>

@@ -1,11 +1,13 @@
-// Substitua os emojis por <Image> do Next.js com suas fotos reais
+import Image from 'next/image';
+
+// Fotos originais em /public
 const photos = [
-  { emoji: '👗', label: 'Vestidos de festa', bg: 'linear-gradient(160deg,#FDE8EE,#F7C5D3)' },
-  { emoji: '🧸', label: 'Conjuntos bebê', bg: 'linear-gradient(135deg,#E4F5F0,#C8EDE3)' },
-  { emoji: '👟', label: 'Looks casuais', bg: 'linear-gradient(135deg,#FDF8F3,#F0E4E8)' },
-  { emoji: '🎀', label: 'Acessórios', bg: 'linear-gradient(135deg,#E4F5F0,#D4EDF8)' },
-  { emoji: '🌸', label: 'Coleção primavera', bg: 'linear-gradient(135deg,#FDE8EE,#F0E4E8)' },
-  { emoji: '⭐', label: 'Destaque da semana', bg: 'linear-gradient(135deg,#FDF8F3,#E4F5F0)' },
+  { image: '/conjunto_menino_green.jpg', label: 'Conjunto Verde', bg: 'linear-gradient(160deg,#FDE8EE,#F7C5D3)' },
+  { image: '/conjunto_menino_lightblue.jpg', label: 'Conjunto Azul Claro', bg: 'linear-gradient(135deg,#E4F5F0,#C8EDE3)' },
+  { image: '/conjunto_menino_red.jpg', label: 'Conjunto Vermelho', bg: 'linear-gradient(135deg,#FDF8F3,#F0E4E8)' },
+  { image: '/trico_branco.jpg', label: 'Tricô Branco', bg: 'linear-gradient(135deg,#E4F5F0,#D4EDF8)' },
+  { image: '/trico_branco2.jpg', label: 'Tricô Branco Detalhes', bg: 'linear-gradient(135deg,#FDE8EE,#F0E4E8)' },
+  { image: '/conjunto_feminino_pink.jpg', label: 'Coleção Infantil', bg: 'linear-gradient(135deg,#FDF8F3,#E4F5F0)' },
 ]
 
 export default function Gallery() {
@@ -26,11 +28,11 @@ export default function Gallery() {
             <div
               key={i}
               className="gallery-item"
-              style={{ background: p.bg }}
+              style={{ background: p.bg, position: 'relative', overflow: 'hidden' }}
               title={p.label}
             >
-              <span style={{ fontSize: i === 0 ? '5rem' : '3rem' }}>{p.emoji}</span>
-              <div className="gallery-overlay" />
+              <Image src={p.image} alt={p.label} fill style={{ objectFit: 'cover' }} />
+              <div className="gallery-overlay" style={{ zIndex: 1, pointerEvents: 'none' }} />
             </div>
           ))}
         </div>

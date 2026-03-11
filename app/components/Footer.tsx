@@ -6,31 +6,23 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-logo-container" style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.2rem',
-          marginBottom: '0.2rem'
-        }}>
-          <Image
-            src="/nova_logo.svg"
-            alt="Nova Logo"
-            width={200}
-            height={200}
-            className="footer-logo-img"
-            style={{ filter: 'drop-shadow(0 6px 12px rgba(254, 254, 254, 0.15))' }}
-          />
-        </div>
         <div className="footer-grid">
-          {/* Marca */}
-
-          <div className="footer-brand" style={{ textAlign: 'center', justifyContent: 'center' }}>
+          {/* Marca / Logo */}
+          <div className="footer-brand">
+            <div className="footer-logo-container">
+              <Image
+                src="/nova_logo.svg"
+                alt="Nova Logo"
+                width={240}
+                height={120}
+                className="footer-logo-img"
+              />
+            </div>
             <p>
               Roupinhas delicadas e cheias de estilo para os pequenos de 0 a 16
               anos. Qualidade, carinho e conforto em cada peça.
             </p>
-            <div className="footer-social" style={{}}>
+            <div className="footer-social">
               <a href="https://www.instagram.com/lojainfantomodas?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="social-btn" aria-label="Instagram">📸</a>
               <a href="#" className="social-btn" aria-label="Facebook">💙</a>
               <a href="#" className="social-btn" aria-label="WhatsApp">💬</a>
@@ -81,7 +73,7 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>© {year} Infanto Modas. Todos os direitos reservados.</p>
           <p>
-            Feito com 💗 para os pequenos <a href="rethinksotware.com.br">RethinkSoftware.com.br</a>—{' '}
+            Feito com 💗 para os pequenos <a href="https://rethinksoftware.com.br">RethinkSoftware.com.br</a>—{' '}
             <a href="#">Política de Privacidade</a>
           </p>
         </div>
