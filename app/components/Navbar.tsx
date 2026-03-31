@@ -11,6 +11,7 @@ const navLinks = [
   { label: 'Por Idade', href: '#por-idade' },
   { label: 'Galeria', href: '#galeria' },
   { label: 'Depoimentos', href: '#depoimentos' },
+  { label: 'Cadastro', href: '#cadastro' },
 ]
 
 import Image from 'next/image'; //importação obrigatória

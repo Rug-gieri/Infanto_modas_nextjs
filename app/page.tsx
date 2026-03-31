@@ -4,6 +4,7 @@ import { useState } from 'react'
 import WhatsAppButton from './components/WhatsAppButton'
 import Gallery from './components/Gallery'
 import Testimonials from './components/Testimonials'
+import CadastroForm from './components/CadastroForm'
 import Image from 'next/image';
 
 
@@ -363,6 +364,24 @@ export default function Home() {
       {/* ── GALERIA ── */}
       <Gallery />
 
+      {/* ── CADASTRO ── */}
+      <section id="cadastro" className="section cadastro-section">
+        <div className="section-inner">
+          <div className="section-header centered">
+            <span className="section-label">Fique por dentro</span>
+            <h2 className="section-title">Cadastre-se e receba novidades 💌</h2>
+            <p className="section-subtitle">
+              Seja a primeira a saber das promoções, lançamentos e dicas de moda
+              infantil. O cadastro é rápido e gratuito!
+            </p>
+          </div>
+          <CadastroForm />
+        </div>
+      </section>
+
+      {/* ── DEPOIMENTOS ── */}
+      <Testimonials />
+
       {/* ── WHATSAPP CTA ── */}
       <section className="whatsapp-section">
         <div className="whatsapp-card">
@@ -380,9 +399,6 @@ export default function Home() {
           <WhatsAppButton label="Falar com a loja agora" variant="primary" />
         </div>
       </section>
-
-      {/* ── DEPOIMENTOS ── */}
-      <Testimonials />
 
       {/* ── FLOATING WA BUTTON ── */}
       <WhatsAppButton variant="floating" />
