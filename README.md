@@ -1,4 +1,4 @@
-# 🌸 Infanto Modas — Site Next.js
+# Infanto Modas — Site Next.js
 
 Landing page completa para loja de roupas infantil, desenvolvida em Next.js 14 com TypeScript e CSS puro.
 
