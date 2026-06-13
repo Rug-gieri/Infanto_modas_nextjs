@@ -27,8 +27,8 @@ export default function Navbar() {
       <nav className="navbar">
         {/* LOGO — substitua a div .logo-placeholder pela sua tag <Image> do Next.js */}
         <a href="#inicio" className="navbar-logo">
-          <div className="logo-placeholder">
-            <Image src="/head_worm_nobg.png" alt="Infanto Modas logo" width={48} height={48} />
+           <div className="logo-blink">
+            <Image src="/nobg_blink.png" alt="infanto modas em texto" width={60} height={48} />
           </div>
           <div className="logo-text">
             <Image src="/infanto_text_logo.png" alt="infanto modas em texto" width={150} height={48} />

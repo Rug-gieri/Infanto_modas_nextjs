@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="footer-brand">
             <div className="footer-logo-container">
               <Image
-                src="/nova_logo.svg"
+                src="/footer_full_logo.png"
                 alt="Nova Logo"
                 width={240}
                 height={120}
@@ -73,7 +73,7 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>© {year} Infanto Modas. Todos os direitos reservados.</p>
           <p>
-            Feito com 💗 para os pequenos <a href="https://rethinksoftware.com.br">RethinkSoftware.com.br</a>—{' '}
+            Feito com 💗 para os pequenos —{' '}
             <a href="#">Política de Privacidade</a>
           </p>
         </div>

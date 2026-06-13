@@ -210,7 +210,7 @@ export default function Home() {
       </section>
 
       {/* ── CATEGORIAS ── */}
-      <section id="categorias" className="section" style={{ background: 'var(--warm-white)' }}>
+      {/* <section id="categorias" className="section" style={{ background: 'var(--warm-white)' }}>
         <div className="section-inner">
           <div className="section-header">
             <span className="section-label">O que você procura?</span>
@@ -230,10 +230,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── MARCAS ── */}
-      <section className="section brands-section">
+      {/* <section className="section brands-section">
         <div className="section-inner" style={{ marginBottom: '2rem' }}>
           <div className="section-header centered">
             <span className="section-label">Trabalhamos com</span>
@@ -249,7 +249,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── DESTAQUES ── */}
       <section id="destaques" className="section" style={{ background: 'var(--cream)' }}>
@@ -365,7 +365,7 @@ export default function Home() {
       <Gallery />
 
       {/* ── CADASTRO ── */}
-      <section id="cadastro" className="section cadastro-section">
+      {/* <section id="cadastro" className="section cadastro-section">
         <div className="section-inner">
           <div className="section-header centered">
             <span className="section-label">Fique por dentro</span>
@@ -377,10 +377,9 @@ export default function Home() {
           </div>
           <CadastroForm />
         </div>
-      </section>
+      </section> */}
 
       {/* ── DEPOIMENTOS ── */}
-      <Testimonials />
 
       {/* ── WHATSAPP CTA ── */}
       <section className="whatsapp-section">

@@ -10,7 +10,7 @@
   --gold: #D4A847;
   --cream: #FDF8F3;
   --warm-white: #FFFBF7;
-  --footer: #57e557f4;
+  --footer: #31ca38;
   --charcoal: #3ca7ee;
   --soft-gray: #9A8A8A;
   --border: #F0E4E8;
@@ -108,12 +108,12 @@ h3 {
   background: rgba(255, 251, 247, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
+  padding: 0 1rem;
   height: 82px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 20px rgba(242, 167, 184, 0.1);
+  box-shadow: 0 2px 20px rgba(110, 110, 110, 0.703);
 }
 
 .navbar-logo {
@@ -121,6 +121,10 @@ h3 {
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+}
+
+.logo-blink {
+  margin-left: 0.4rem;
 }
 
 .logo-placeholder {
@@ -148,6 +152,13 @@ h3 {
 .logo-text {
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    display: none;
+  }
+  
 }
 
 .logo-name {
@@ -1940,4 +1951,4 @@ h3 {
   .cadastro-form {
     padding: 2rem 1.25rem;
   }
-}
+}
