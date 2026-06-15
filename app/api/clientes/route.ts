@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '../../lib/db'
 
+function checkAuth(req: NextRequest) {
+  const authHeader = req.headers.get('x-admin-token')
+  return authHeader === process.env.ADMIN_SECRET
+}
+
 // POST — cadastrar novo cliente
 export async function POST(req: NextRequest) {
   try {
@@ -45,9 +50,7 @@ export async function POST(req: NextRequest) {
 
 // GET — listar clientes (protegido por header de admin)
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('x-admin-token')
-
-  if (authHeader !== process.env.ADMIN_SECRET) {
+  if (!checkAuth(req)) {
     return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
@@ -58,6 +61,82 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ clientes: result.rows })
   } catch (err) {
     console.error('Erro ao listar clientes:', err)
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+  }
+}
+
+// PUT — editar cliente
+export async function PUT(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+  }
+
+  try {
+    const body = await req.json()
+    const { id, nome, email, telefone, aceita_newsletter } = body
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID do cliente é obrigatório.' }, { status: 400 })
+    }
+
+    const exists = await pool.query('SELECT id FROM clientes WHERE id = $1', [id])
+    if (exists.rows.length === 0) {
+      return NextResponse.json({ error: 'Cliente não encontrado.' }, { status: 404 })
+    }
+
+    const fields: string[] = []
+    const values: (string | number | boolean | null)[] = []
+    let paramIndex = 1
+
+    const fieldMap: Record<string, string | undefined> = { nome, email, telefone, aceita_newsletter }
+    for (const [field, value] of Object.entries(fieldMap)) {
+      if (value !== undefined) {
+        fields.push(`${field} = $${paramIndex}`)
+        values.push(value)
+        paramIndex++
+      }
+    }
+
+    if (fields.length === 0) {
+      return NextResponse.json({ error: 'Nenhum campo para atualizar.' }, { status: 400 })
+    }
+
+    values.push(id)
+    const result = await pool.query(
+      `UPDATE clientes SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING id, nome, email, telefone, aceita_newsletter, criado_em`,
+      values
+    )
+
+    return NextResponse.json({ message: 'Cliente atualizado com sucesso!', cliente: result.rows[0] })
+  } catch (err: any) {
+    console.error('Erro ao atualizar cliente:', err)
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+  }
+}
+
+// DELETE — excluir cliente
+export async function DELETE(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+  }
+
+  try {
+    const body = await req.json()
+    const { id } = body
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID do cliente é obrigatório.' }, { status: 400 })
+    }
+
+    const result = await pool.query('DELETE FROM clientes WHERE id = $1', [id])
+
+    if (result.rowCount === 0) {
+      return NextResponse.json({ error: 'Cliente não encontrado.' }, { status: 404 })
+    }
+
+    return NextResponse.json({ message: 'Cliente removido com sucesso.' })
+  } catch (err: any) {
+    console.error('Erro ao excluir cliente:', err)
     return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }

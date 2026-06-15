@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import WhatsAppButton from './components/WhatsAppButton'
 import Gallery from './components/Gallery'
@@ -8,8 +8,22 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const WHATSAPP = '5569992327118'
+
+interface Produto {
+  id: number
+  nome: string
+  descricao: string | null
+  preco: number
+  categoria: string
+  faixa_etaria: string | null
+  imagem_url: string
+  badge: string | null
+  ativo: boolean
+  criado_em: string
+}
 
 const highlights = [
   {
@@ -136,6 +150,34 @@ const ageGuide = [
 ]
 
 export default function Home() {
+  const [produtos, setProdutos] = useState<Produto[]>([])
+  const [loadingProdutos, setLoadingProdutos] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/produtos?ativos=true')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.produtos) {
+          setProdutos(data.produtos)
+        }
+      })
+      .catch(() => {
+        // fallback to hardcoded data on error
+      })
+      .finally(() => setLoadingProdutos(false))
+  }, [])
+
+  const destaques = produtos.length > 0
+    ? produtos.filter((p) => p.badge).slice(0, 4)
+    : highlights
+
+  const bgColors = [
+    'linear-gradient(135deg,#FDE8EE,#F7C5D3)',
+    'linear-gradient(135deg,#E4F5F0,#C8EDE3)',
+    'linear-gradient(135deg,#FDF8F3,#F0E4E8)',
+    'linear-gradient(135deg,#FDE8EE,#E8D5F5)',
+  ]
+
   return (
     <>
       {/* ── HERO ── */}
@@ -216,46 +258,65 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-6">
-            {highlights.map((p, i) => (
-              <Card key={i} className="group overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 p-0">
-                <div
-                  className="relative h-56 overflow-hidden flex items-center justify-center"
-                  style={{ background: p.bg }}
-                >
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                  <Badge className="absolute top-3 left-3 z-10 bg-rose-deep text-white hover:bg-rose-deep">
-                    {p.badge}
-                  </Badge>
-                </div>
-                <CardContent className="p-5">
-                  <div className="font-display font-semibold text-foreground text-lg mb-1">
-                    {p.name}
+            {loadingProdutos ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm p-0">
+                  <Skeleton className="h-56 w-full rounded-none" />
+                  <CardContent className="p-5 space-y-3">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-9 w-full" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : destaques.length === 0 ? (
+              <p className="text-center text-muted-foreground col-span-full py-8">Nenhum produto em destaque no momento.</p>
+            ) : (
+              destaques.map((p, i) => (
+                <Card key={'image' in p ? (p as typeof highlights[0]).name : (p as Produto).id} className="group overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 p-0">
+                  <div
+                    className="relative h-56 overflow-hidden flex items-center justify-center"
+                    style={{ background: bgColors[i % bgColors.length] }}
+                  >
+                    <Image
+                      src={'image' in p ? (p as typeof highlights[0]).image : (p as Produto).imagem_url}
+                      alt={'image' in p ? (p as typeof highlights[0]).name : (p as Produto).nome}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    <Badge className="absolute top-3 left-3 z-10 bg-rose-deep text-white hover:bg-rose-deep">
+                      {'badge' in p ? (p as typeof highlights[0]).badge : (p as Produto).badge}
+                    </Badge>
                   </div>
-                  <div className="text-sm text-muted-foreground mb-4">
-                    {p.age}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-muted-foreground">
-                      Consulte valor 💬
-                    </span>
-                    <a
-                      href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} 💗`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600">
-                        💬 Pedir
-                      </Button>
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-5">
+                    <div className="font-display font-semibold text-foreground text-lg mb-1">
+                      {'name' in p ? (p as typeof highlights[0]).name : (p as Produto).nome}
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-4">
+                      {'age' in p
+                        ? (p as typeof highlights[0]).age
+                        : (p as Produto).faixa_etaria || 'Todas as idades'}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-muted-foreground">
+                        {'preco' in p && (p as Produto).preco
+                          ? `R$ ${(p as Produto).preco.toFixed(2).replace('.', ',')}`
+                          : 'Consulte valor 💬'}
+                      </span>
+                      <a
+                        href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${'name' in p ? (p as typeof highlights[0]).name : (p as Produto).nome} 💗`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600">
+                          💬 Pedir
+                        </Button>
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>
