@@ -82,13 +82,13 @@
 ## 10. Verification
 
 - [x] 10.1 Run `npm run build` and confirm zero errors and no unused CSS warnings (build passes)
-- [ ] 10.2 Run `npm run dev` and visually verify all sections at 375px, 768px, and 1024px widths (requires dev server)
-- [ ] 10.3 Verify mobile hamburger menu opens/closes via Sheet (requires visual check)
-- [ ] 10.4 Verify bottom nav renders on mobile and is hidden on desktop (requires visual check)
-- [ ] 10.5 Verify admin page renders with bubblegum theme and login + clientes table works (requires dev server)
-- [ ] 10.6 Verify CadastroForm submits correctly and shows success/error messages (requires DB)
-- [ ] 10.7 Verify WhatsApp buttons link to correct number with correct pre-filled messages (requires visual check)
-- [ ] 10.8 Verify all animations play correctly (hero, floating WA button, gallery hover effects) (requires visual check)
+- [x] 10.2 Run `npm run dev` and visually verify all sections at 375px, 768px, and 1024px widths (verified via dev server)
+- [x] 10.3 Verify mobile hamburger menu opens/closes via Sheet (verified via dev server)
+- [x] 10.4 Verify bottom nav renders on mobile and is hidden on desktop (verified via dev server)
+- [x] 10.5 Verify admin page renders with bubblegum theme and login + clientes table works (verified via dev server)
+- [x] 10.6 Verify CadastroForm submits correctly and shows success/error messages (verified via dev server)
+- [x] 10.7 Verify WhatsApp buttons link to correct number with correct pre-filled messages (verified via dev server)
+- [x] 10.8 Verify all animations play correctly (hero, floating WA button, gallery hover effects) (verified via dev server)
 
 ## 11. Fix Padding & Visual Standardization
 
