@@ -2,8 +2,22 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import AnnouncementBar from './components/AnnouncementBar';
+import AnnouncementBar from './components/AnnouncementBar'
+import BottomNav from './components/BottomNav'
+import { Playfair_Display, Nunito } from 'next/font/google'
+import { cn } from '@/lib/utils'
 
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['400', '600', '700'],
+})
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['300', '400', '500', '600', '700'],
+})
 
 export const metadata: Metadata = {
   title: 'Infanto Modas | Moda Infantil com Amor',
@@ -13,7 +27,6 @@ export const metadata: Metadata = {
   icons: {
     icon: '/head_worm_nobg.png',
   },
-
 }
 
 export default function RootLayout({
@@ -23,13 +36,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body>
-        <div className="sticky-header">
-          <AnnouncementBar />
-          <Navbar />
-        </div>
-        <main>{children}</main>
+      <body className={cn(playfairDisplay.variable, nunito.variable, 'font-body', 'theme-main')}>
+        <AnnouncementBar />
+        <Navbar />
+        <main className="pb-20 md:pb-0">{children}</main>
         <Footer />
+        <BottomNav />
       </body>
     </html>
   )

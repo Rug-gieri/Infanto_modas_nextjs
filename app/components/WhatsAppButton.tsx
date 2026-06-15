@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+
 interface WhatsAppButtonProps {
   label?: string
   message?: string
@@ -5,7 +7,7 @@ interface WhatsAppButtonProps {
   variant?: 'primary' | 'floating'
 }
 
-const WHATSAPP_NUMBER = '5500000000000' // ← substitua pelo número real
+const WHATSAPP_NUMBER = '5569992327118'
 
 export default function WhatsAppButton({
   label = 'Compre pelo WhatsApp',
@@ -22,50 +24,18 @@ export default function WhatsAppButton({
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Falar no WhatsApp"
-        style={{
-          position: 'fixed',
-          bottom: '1.5rem',
-          right: '1.5rem',
-          zIndex: 99,
-          width: '58px',
-          height: '58px',
-          borderRadius: '50%',
-          background: '#25D366',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.7rem',
-          boxShadow: '0 4px 20px rgba(37,211,102,0.5)',
-          textDecoration: 'none',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-          animation: 'floatWA 3s ease-in-out infinite',
-        }}
-        onMouseEnter={(e) => {
-          ;(e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'
-        }}
-        onMouseLeave={(e) => {
-          ;(e.currentTarget as HTMLElement).style.transform = 'scale(1)'
-        }}
+        className="fixed bottom-6 right-6 z-[99] flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#25D366] text-[1.7rem] shadow-lg shadow-green-500/50 no-underline transition-transform duration-300 hover:scale-110 animate-float-wa"
       >
         💬
-        <style>{`
-          @keyframes floatWA {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-          }
-        `}</style>
       </a>
     )
   }
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="btn btn-whatsapp"
-    >
-      💬 {label}
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      <Button variant="default" className="bg-green-500 hover:bg-green-600">
+        💬 {label}
+      </Button>
     </a>
   )
 }
