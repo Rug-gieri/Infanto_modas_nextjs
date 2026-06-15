@@ -1,3 +1,5 @@
+import { Card, CardContent } from '@/components/ui/card'
+
 const testimonials = [
   {
     stars: 5,
@@ -45,32 +47,41 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="depoimentos" className="section testimonials-section">
-      <div className="section-inner">
-        <div className="section-header centered">
-          <span className="section-label">Depoimentos</span>
-          <h2 className="section-title">O que as mamães dizem 💗</h2>
-          <p className="section-subtitle">
+    <section id="depoimentos" className="py-14 px-4 sm:py-20 sm:px-8 bg-warm-white">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center mb-8 sm:mb-12">
+          <span className="inline-block text-rose-deep font-bold text-[0.7rem] sm:text-xs uppercase tracking-[0.15em] mb-3">Depoimentos</span>
+          <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] text-foreground mb-3 leading-tight">O que as mamães dizem 💗</h2>
+          <p className="text-muted-foreground max-w-[520px] mx-auto">
             Mais de 500 famílias já confiaram na Infanto Modas. Veja o que elas
             têm a dizer!
           </p>
         </div>
 
-        <div className="testimonials-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
           {testimonials.map((t, i) => (
-            <div key={i} className="testimonial-card">
-              <div className="testimonial-stars">
-                {'★'.repeat(t.stars)}
-              </div>
-              <p className="testimonial-text">{t.text}</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">{t.emoji}</div>
-                <div>
-                  <div className="author-name">{t.name}</div>
-                  <div className="author-info">{t.info}</div>
+            <Card
+              key={i}
+              className="relative border-brand-border bg-white rounded-[20px] p-7 transition-all hover:border-rose hover:shadow-lg hover:shadow-rose/20 hover:-translate-y-[3px] before:content-['\201C'] before:font-display before:text-[5rem] before:text-rose-light before:absolute before:top-2 before:right-5 before:leading-none"
+            >
+              <CardContent className="p-0">
+                <div className="text-gold text-base mb-4 tracking-[2px]">
+                  {'★'.repeat(t.stars)}
                 </div>
-              </div>
-            </div>
+                <p className="text-[0.93rem] text-foreground mb-5 leading-relaxed italic">
+                  {t.text}
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center text-xl flex-shrink-0 bg-gradient-to-br from-rose-light to-mint-light">
+                    {t.emoji}
+                  </div>
+                  <div>
+                    <div className="font-bold text-[0.9rem] text-foreground">{t.name}</div>
+                    <div className="text-[0.78rem] text-muted-foreground">{t.info}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

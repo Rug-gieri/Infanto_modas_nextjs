@@ -1,38 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import WhatsAppButton from './components/WhatsAppButton'
 import Gallery from './components/Gallery'
-import Testimonials from './components/Testimonials'
-import CadastroForm from './components/CadastroForm'
-import Image from 'next/image';
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
-
-// ─── DATA ───────────────────────────────────────────────────────────────────
-
-const WHATSAPP = '5569992327118' // ← substitua
-
-const categories = [
-  { icon: '🍼', name: 'Bebês', desc: '0 – 2 anos', href: '#' },
-  { icon: '🧸', name: 'Toddler', desc: '2 – 4 anos', href: '#' },
-  { icon: '🌈', name: 'Infantil', desc: '4 – 8 anos', href: '#' },
-  { icon: '⭐', name: 'Juvenil', desc: '8 – 14 anos', href: '#' },
-  { icon: '🎀', name: 'Festa', desc: 'Ocasiões especiais', href: '#' },
-  { icon: '🌙', name: 'Pijamas', desc: 'Dormir com estilo', href: '#' },
-]
-
-const brands = [
-  { name: 'Milon', emoji: '✨' },
-  { name: 'Carinhoso', emoji: '💗' },
-  { name: 'Kyly', emoji: '🌸' },
-  { name: 'Tip Top', emoji: '🍼' },
-  { name: 'Brandili', emoji: '🌟' },
-  { name: 'Alakazoo', emoji: '🎨' },
-  { name: 'Kely & Kety', emoji: '🦋' },
-  { name: 'Kukie', emoji: '🧸' },
-  { name: 'Alphabeto', emoji: '📚' },
-  { name: 'Puket', emoji: '🌙' },
-]
+const WHATSAPP = '5569992327118'
 
 const highlights = [
   {
@@ -158,244 +135,226 @@ const ageGuide = [
   },
 ]
 
-// ─── PAGE ────────────────────────────────────────────────────────────────────
-
 export default function Home() {
-  const [activeAge, setActiveAge] = useState(0)
-  const doubled = [...brands, ...brands]
-
   return (
     <>
       {/* ── HERO ── */}
-      <section data-search-root id="inicio" className="hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <div className="hero-badge">
+      <section
+        data-search-root
+        id="inicio"
+        className="relative flex items-center sm:min-h-[88vh] overflow-hidden py-10 px-4 sm:py-16 sm:px-8 bg-gradient-to-br from-rose-light via-mint-light to-cream"
+      >
+        {/* Decorative blobs */}
+        <div className="absolute -top-[60px] -right-[60px] w-[220px] h-[220px] md:w-[380px] md:h-[380px] rounded-full bg-[radial-gradient(circle,rgba(242,167,184,0.35)_0%,transparent_70%)] animate-float" />
+        <div className="absolute -bottom-[80px] -left-[40px] w-[180px] h-[180px] md:w-[300px] md:h-[300px] rounded-full bg-[radial-gradient(circle,rgba(168,216,200,0.4)_0%,transparent_70%)] animate-float-reverse" />
+
+        <div className="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center w-full">
+          <div className="text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-white border border-rose text-rose-deep text-xs font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider shadow-md shadow-rose/20 animate-fade-slide-up">
               <span>🌸</span> Porque seu filho merece o melhor!
             </div>
-            <h1 className="hero-title">
+            <h1 className="text-[clamp(2.2rem,5vw,3.8rem)] leading-tight text-foreground mb-5 animate-fade-slide-up [animation-delay:0.1s]">
               Roupinhas que contam{' '}
-              <em>histórias de infância</em>
+              <em className="italic text-rose-deep not-italic">histórias de infância</em>
             </h1>
-            <p className="hero-subtitle">
+            <p className="text-[1.05rem] text-muted-foreground mb-8 max-w-[420px] animate-fade-slide-up [animation-delay:0.2s] mx-auto md:mx-0">
               De 0 a 16 anos, cada peça é escolhida com carinho para vestir os
               pequenos com conforto, qualidade e muito estilo. Compre pelo
               WhatsApp e receba em casa! 💗
             </p>
-            <div className="hero-actions">
+            <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start animate-fade-slide-up [animation-delay:0.3s]">
               <a
                 href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de ver as roupinhas 💗')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-whatsapp"
               >
-                💬 Comprar agora
+                <Button variant="default" className="w-full sm:w-auto bg-green-500 hover:bg-green-600">
+                  💬 Comprar agora
+                </Button>
               </a>
-              <a href="#categorias" className="btn btn-secondary">
-                Ver categorias ↓
+              <a href="#destaques" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full">Ver destaques ↓</Button>
               </a>
             </div>
           </div>
 
-          <div className="hero-visual">
-            <div className="hero-floating-pill pill-1">⭐ +500 famílias</div>
-            <div className="hero-floating-pill pill-2">🚚 Entrega em casa</div>
-            <div className="hero-image-frame">
+          <div className="flex justify-center items-center animate-fade-slide-up [animation-delay:0.2s] order-first md:order-none">
+            <div className="relative">
+              {/* Floating pills */}
+              <div className="hidden sm:flex absolute top-[10%] md:-right-[10%] right-[-5%] z-10 bg-white rounded-full px-4 py-2 shadow-lg text-xs font-bold text-rose-deep items-center gap-1.5 animate-float whitespace-nowrap">
+                ⭐ +500 famílias
+              </div>
+              <div className="hidden sm:flex absolute bottom-[15%] md:-left-[5%] left-[-5%] z-10 bg-white rounded-full px-4 py-2 shadow-lg text-xs font-bold text-mint items-center gap-1.5 animate-float [animation-delay:2s] whitespace-nowrap">
+                🚚 Entrega em casa
+              </div>
 
-              <Image className="hero-image" src="/main_img.jpg" alt="mãe vestindo o filho" width={430} height={450} />
-
+              {/* Blob image frame */}
+              <div className="w-[220px] h-[240px] sm:w-[280px] sm:h-[300px] md:w-[400px] md:h-[450px] bg-white rounded-[40%_60%_60%_40%_/_50%_40%_60%_50%] flex items-center justify-center shadow-xl shadow-rose/30 border-[3px] border-rose/30 overflow-hidden animate-morph-blob">
+                <Image
+                  className="object-cover"
+                  src="/main_img.jpg"
+                  alt="mãe vestindo o filho"
+                  width={430}
+                  height={450}
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── CATEGORIAS ── */}
-      {/* <section id="categorias" className="section" style={{ background: 'var(--warm-white)' }}>
-        <div className="section-inner">
-          <div className="section-header">
-            <span className="section-label">O que você procura?</span>
-            <h2 className="section-title">Nossas categorias</h2>
-            <p className="section-subtitle">
-              Do bebezinho ao juvenil, temos tudo que os pequenos precisam em
-              cada fase da vida.
-            </p>
-          </div>
-          <div className="categories-grid">
-            {categories.map((c) => (
-              <a key={c.name} href={c.href} className="category-card">
-                <span className="category-icon">{c.icon}</span>
-                <div className="category-name">{c.name}</div>
-                <div className="category-desc">{c.desc}</div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* ── MARCAS ── */}
-      {/* <section className="section brands-section">
-        <div className="section-inner" style={{ marginBottom: '2rem' }}>
-          <div className="section-header centered">
-            <span className="section-label">Trabalhamos com</span>
-            <h2 className="section-title">Marcas que a gente ama 🏷️</h2>
-          </div>
-        </div>
-        <div className="brands-track-wrapper">
-          <div className="brands-track">
-            {doubled.map((b, i) => (
-              <div key={i} className="brand-chip">
-                <span>{b.emoji}</span> {b.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* ── DESTAQUES ── */}
-      <section id="destaques" className="section" style={{ background: 'var(--cream)' }}>
-        <div className="section-inner">
-          <div className="section-header">
-            <span className="section-label">Peças em destaque</span>
-            <h2 className="section-title">As queridinhas do momento ✨</h2>
-            <p className="section-subtitle">
+      <section id="destaques" className="py-14 px-4 sm:py-20 sm:px-8 bg-cream">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-3">Peças em destaque</span>
+            <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] text-foreground mb-3 leading-tight">As queridinhas do momento ✨</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">
               Peças selecionadas com muito carinho que estão fazendo sucesso com
               os pequenos.
             </p>
           </div>
-          <div className="highlights-grid">
+
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-6">
             {highlights.map((p, i) => (
-              <div key={i} className="product-card">
-                <div className="product-image" style={{ background: p.bg, position: 'relative', overflow: 'hidden' }}>
-                  {/* @ts-ignore - emoji is optional and image is our new field */}
-                  {p.image ? (
-                    // @ts-ignore
-                    <Image src={p.image} alt={p.name} fill style={{ objectFit: 'cover' }} />
-                  ) : (
-                    // @ts-ignore
-                    <span style={{ fontSize: '4rem' }}>{p.emoji}</span>
-                  )}
-                  <span className="product-badge" style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>{p.badge}</span>
+              <Card key={i} className="group overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 p-0">
+                <div
+                  className="relative h-56 overflow-hidden flex items-center justify-center"
+                  style={{ background: p.bg }}
+                >
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                  />
+                  <Badge className="absolute top-3 left-3 z-10 bg-rose-deep text-white hover:bg-rose-deep">
+                    {p.badge}
+                  </Badge>
                 </div>
-                <div className="product-info">
-                  <div className="product-name">{p.name}</div>
-                  <div className="product-age">{p.age}</div>
-                  <div className="product-footer">
-                    <span className="product-price">Consulte valor 💬</span>
+                <CardContent className="p-5">
+                  <div className="font-display font-semibold text-foreground text-lg mb-1">
+                    {p.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    {p.age}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-muted-foreground">
+                      Consulte valor 💬
+                    </span>
                     <a
                       href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} 💗`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-primary"
-                      style={{ padding: '0.5rem 1rem', fontSize: '0.82rem' }}
                     >
-                      💬 Pedir
+                      <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600">
+                        💬 Pedir
+                      </Button>
                     </a>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── GUIA POR IDADE ── */}
-      <section id="por-idade" className="section age-guide">
-        <div className="section-inner">
-          <div className="section-header centered">
-            <span className="section-label">Guia de presente por idade</span>
-            <h2 className="section-title">O que dar de presente? 🎁</h2>
-            <p className="section-subtitle">
+      <section id="por-idade" className="py-14 px-4 sm:py-20 sm:px-8 bg-warm-white">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-3">Guia de presente por idade</span>
+            <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] text-foreground mb-3 leading-tight">O que dar de presente? 🎁</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">
               Cada fase da infância tem suas necessidades e encantamentos únicos.
               Escolha o presente ideal para cada idade.
             </p>
           </div>
 
-          {/* Tabs */}
-          <div className="age-tabs">
-            {ageGuide.map((a, i) => (
-              <button
-                key={i}
-                className={`age-tab ${activeAge === i ? 'active' : ''}`}
-                onClick={() => setActiveAge(i)}
-              >
-                {a.tab}
-              </button>
-            ))}
-          </div>
+          <Tabs defaultValue="0" className="w-full">
+            <TabsList className="flex flex-wrap justify-center gap-2 mb-10 bg-transparent h-auto">
+              {ageGuide.map((a, i) => (
+                <TabsTrigger
+                  key={i}
+                  value={String(i)}
+                  className="data-[state=active]:bg-rose-deep data-[state=active]:text-white text-muted-foreground border border-brand-border rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:text-rose-deep"
+                >
+                  {a.tab}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-          {/* Panels */}
-          {ageGuide.map((a, i) => (
-            <div
-              key={i}
-              className={`age-panel ${activeAge === i ? 'active' : ''}`}
-            >
-              <div className="age-panel-emoji">{a.emoji}</div>
-              <div className="age-panel-content">
-                <span className="age-phase">
-                  {a.label} · {a.phase}
-                </span>
-                <h3>{a.title}</h3>
-                <p>{a.description}</p>
-                <p>
-                  <strong>Por que essas roupas? </strong>
-                  {a.clothingWhy}
-                </p>
-                <ul className="age-tips">
-                  {a.tips.map((t, j) => (
-                    <li key={j}>{t}</li>
-                  ))}
-                </ul>
-                <div style={{ marginTop: '1.5rem' }}>
-                  <a
-                    href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Preciso de ajuda para escolher presente para criança de ${a.tab} 🎁`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-whatsapp"
-                  >
-                    💬 Me ajude a escolher
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
+            {ageGuide.map((a, i) => (
+              <TabsContent key={i} value={String(i)} className="animate-fade-slide-up">
+                <Card className="border-brand-border bg-white rounded-2xl p-0">
+                  <CardContent className="p-8 grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-start">
+                    <div className="text-6xl md:text-7xl flex-shrink-0 text-center">{a.emoji}</div>
+                    <div>
+                      <span className="inline-block text-rose-deep font-semibold text-sm mb-2">
+                        {a.label} · {a.phase}
+                      </span>
+                      <h3 className="font-display text-2xl text-foreground mb-4">{a.title}</h3>
+                      <p className="text-muted-foreground mb-4">{a.description}</p>
+                      <p className="mb-6">
+                        <strong className="text-foreground">Por que essas roupas? </strong>
+                        {a.clothingWhy}
+                      </p>
+                      <ul className="space-y-3 mb-8">
+                        {a.tips.map((t, j) => (
+                          <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground before:content-['🌸'] before:flex-shrink-0">
+                            {t}
+                          </li>
+                        ))}
+                      </ul>
+                      <a
+                        href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Preciso de ajuda para escolher presente para criança de ${a.tab} 🎁`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="default" className="bg-green-500 hover:bg-green-600">
+                          💬 Me ajude a escolher
+                        </Button>
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
       </section>
 
       {/* ── GALERIA ── */}
       <Gallery />
 
-      {/* ── CADASTRO ── */}
-      {/* <section id="cadastro" className="section cadastro-section">
-        <div className="section-inner">
-          <div className="section-header centered">
-            <span className="section-label">Fique por dentro</span>
-            <h2 className="section-title">Cadastre-se e receba novidades 💌</h2>
-            <p className="section-subtitle">
-              Seja a primeira a saber das promoções, lançamentos e dicas de moda
-              infantil. O cadastro é rápido e gratuito!
-            </p>
-          </div>
-          <CadastroForm />
-        </div>
-      </section> */}
-
-      {/* ── DEPOIMENTOS ── */}
-
       {/* ── WHATSAPP CTA ── */}
-      <section className="whatsapp-section">
-        <div className="whatsapp-card">
-          <span className="whatsapp-icon">💬</span>
-          <h2>Compre pelo WhatsApp</h2>
-          <p>
-            Atendimento personalizado, tire suas dúvidas, peça fotos dos produtos
-            e receba tudo no conforto da sua casa. Simples assim!
-          </p>
-          <div className="whatsapp-features">
-            <div className="whatsapp-feature">✅ Atendimento rápido</div>
-            <div className="whatsapp-feature">🚚 Entrega em domicílio</div>
-            <div className="whatsapp-feature">🔒 Compra segura</div>
-          </div>
-          <WhatsAppButton label="Falar com a loja agora" variant="primary" />
+      <section className="py-14 px-4 sm:py-20 sm:px-8 bg-gradient-to-br from-rose-light to-mint-light">
+        <div className="max-w-[600px] mx-auto">
+          <Card className="bg-white/90 backdrop-blur-lg border border-brand-border/60 rounded-[28px] p-10 text-center shadow-xl shadow-rose/15">
+            <CardContent className="p-0">
+              <span className="text-5xl mb-4 block">💬</span>
+              <h2 className="font-display text-[clamp(1.6rem,3vw,2.2rem)] text-foreground mb-3">
+                Compre pelo WhatsApp
+              </h2>
+              <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+                Atendimento personalizado, tire suas dúvidas, peça fotos dos produtos
+                e receba tudo no conforto da sua casa. Simples assim!
+              </p>
+              <div className="flex flex-col sm:flex-row items-center sm:justify-center gap-4 sm:gap-6 mb-8">
+                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
+                  ✅ Atendimento rápido
+                </Badge>
+                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
+                  🚚 Entrega em domicílio
+                </Badge>
+                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
+                  🔒 Compra segura
+                </Badge>
+              </div>
+              <WhatsAppButton label="Falar com a loja agora" variant="primary" />
+            </CardContent>
+          </Card>
         </div>
       </section>
 
