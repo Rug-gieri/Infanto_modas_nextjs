@@ -24,13 +24,13 @@ interface AdminSidebarProps {
 
 function SidebarContent({ activeSection, onNavigate, onLogout }: AdminSidebarProps) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-5">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="p-5 shrink-0">
         <h1 className="font-display text-lg font-bold text-foreground">Painel Admin</h1>
         <p className="text-xs text-muted-foreground mt-0.5">Infanto Modas</p>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 overflow-y-auto px-3 space-y-1 min-h-0">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = activeSection === item.id
@@ -45,26 +45,26 @@ function SidebarContent({ activeSection, onNavigate, onLogout }: AdminSidebarPro
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-5 h-5 shrink-0" />
               {item.label}
             </button>
           )
         })}
       </nav>
 
-      <div className="p-3 space-y-1 border-t border-border">
+      <div className="p-3 space-y-1 border-t border-border shrink-0">
         <a
           href="/"
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors no-underline"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 shrink-0" />
           Voltar ao site
         </a>
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors text-left"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-5 h-5 shrink-0" />
           Sair
         </button>
       </div>

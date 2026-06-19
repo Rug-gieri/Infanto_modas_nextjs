@@ -56,9 +56,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { nome, descricao, preco, categoria, faixa_etaria, imagem_url, badge, ativo } = body
 
-    if (!nome || preco == null || !categoria || !imagem_url) {
+    if (!nome || preco == null || preco <= 0 || !categoria || !imagem_url) {
       return NextResponse.json(
-        { error: 'Nome, preço, categoria e imagem são obrigatórios.' },
+        { error: 'Nome, preço (maior que zero), categoria e imagem são obrigatórios.' },
         { status: 400 }
       )
     }

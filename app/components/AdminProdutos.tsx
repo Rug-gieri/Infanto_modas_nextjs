@@ -62,6 +62,7 @@ export default function AdminProdutos() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState({ ...emptyProduto })
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletingProduto, setDeletingProduto] = useState<Produto | null>(null)
@@ -69,6 +70,10 @@ export default function AdminProdutos() {
   useEffect(() => {
     fetchProdutos()
   }, [])
+
+  useEffect(() => {
+    fetchProdutos()
+  }, [filtroCategoria])
 
   function getToken() {
     return localStorage.getItem('admin_token') || ''
@@ -94,6 +99,7 @@ export default function AdminProdutos() {
   function openCreate() {
     setEditingId(null)
     setForm({ ...emptyProduto })
+    setSaveError('')
     setDialogOpen(true)
   }
 
@@ -115,6 +121,7 @@ export default function AdminProdutos() {
   async function handleSave() {
     if (!form.nome || !form.imagem_url || !form.categoria || form.preco <= 0) return
     setSaving(true)
+    setSaveError('')
     try {
       const method = editingId ? 'PUT' : 'POST'
       const body = editingId ? { id: editingId, ...form } : form
@@ -126,12 +133,17 @@ export default function AdminProdutos() {
         },
         body: JSON.stringify(body),
       })
+      const data = await res.json()
       if (res.ok) {
         setDialogOpen(false)
+        setFiltroCategoria('')
         fetchProdutos()
+      } else {
+        setSaveError(data.error || 'Erro ao salvar produto.')
       }
     } catch (err) {
       console.error('Erro ao salvar produto:', err)
+      setSaveError('Erro de conexão. Verifique sua rede.')
     } finally {
       setSaving(false)
     }
@@ -322,7 +334,7 @@ export default function AdminProdutos() {
             </div>
             <div>
               <Label htmlFor="prod-preco">Preço *</Label>
-              <Input id="prod-preco" type="number" step="0.01" min="0" value={form.preco || ''} onChange={(e) => setForm({ ...form, preco: parseFloat(e.target.value) || 0 })} />
+              <Input id="prod-preco" type="text" inputMode="decimal" value={form.preco || ''} onChange={(e) => setForm({ ...form, preco: parseFloat(e.target.value.replace(',', '.')) || 0 })} />
             </div>
             <div>
               <Label htmlFor="prod-categoria">Categoria *</Label>
@@ -368,10 +380,15 @@ export default function AdminProdutos() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={saving || !form.nome || !form.imagem_url || form.preco <= 0}>
-              {saving ? 'Salvando...' : 'Salvar'}
-            </Button>
+            {saveError && (
+              <p className="text-sm text-destructive font-semibold w-full">{saveError}</p>
+            )}
+            <div className="flex gap-2 w-full justify-end">
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+              <Button onClick={handleSave} disabled={saving || !form.nome || !form.imagem_url || form.preco <= 0}>
+                {saving ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

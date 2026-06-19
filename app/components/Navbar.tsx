@@ -89,8 +89,8 @@ export default function Navbar() {
 
     {/* Sheet — outside nav to avoid flex layout interference */}
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent side="right" className="w-[80%] max-w-[320px] flex flex-col gap-6">
-        <SheetHeader className="text-left">
+      <SheetContent side="right" className="w-[80%] max-w-[320px] flex flex-col gap-0 h-full overflow-hidden">
+        <SheetHeader className="text-left shrink-0 p-5 pb-3">
           <div className="flex flex-col">
             <span className="font-display text-xl font-bold text-charcoal">
               Infanto Modas
@@ -100,7 +100,7 @@ export default function Navbar() {
             </span>
           </div>
         </SheetHeader>
-        <ul className="list-none flex flex-col">
+        <ul className="list-none flex flex-col flex-1 overflow-y-auto min-h-0 px-5">
           {navLinks.map((l) => (
             <li key={l.href}>
               <a
@@ -113,19 +113,20 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <a
-          href={`https://wa.me/${WHATSAPP_NUMBER}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-auto"
-        >
-          <Button
-            variant="default"
-            className="w-full bg-green-500 hover:bg-green-600"
+        <div className="shrink-0 p-5 pt-3">
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            💬 Comprar pelo WhatsApp
-          </Button>
-        </a>
+            <Button
+              variant="default"
+              className="w-full bg-green-500 hover:bg-green-600"
+            >
+              💬 Comprar pelo WhatsApp
+            </Button>
+          </a>
+        </div>
       </SheetContent>
     </Sheet>
     </>

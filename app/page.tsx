@@ -387,7 +387,7 @@ export default function Home() {
       </section>
 
       {/* ── GALERIA ── */}
-      <Gallery />
+     
 
       {/* ── WHATSAPP CTA ── */}
       <section className="py-14 px-4 sm:py-20 sm:px-8 bg-gradient-to-br from-rose-light to-mint-light">
