@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import WhatsAppButton from './components/WhatsAppButton'
 import Gallery from './components/Gallery'
+import HeroCarousel from './components/HeroCarousel'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -180,70 +181,7 @@ export default function Home() {
 
   return (
     <>
-      {/* ── HERO ── */}
-      <section
-        data-search-root
-        id="inicio"
-        className="relative flex items-center sm:min-h-[88vh] overflow-hidden py-10 px-4 sm:py-16 sm:px-8 bg-gradient-to-br from-rose-light via-mint-light to-cream"
-      >
-        {/* Decorative blobs */}
-        <div className="absolute -top-[60px] -right-[60px] w-[220px] h-[220px] md:w-[380px] md:h-[380px] rounded-full bg-[radial-gradient(circle,rgba(242,167,184,0.35)_0%,transparent_70%)] animate-float" />
-        <div className="absolute -bottom-[80px] -left-[40px] w-[180px] h-[180px] md:w-[300px] md:h-[300px] rounded-full bg-[radial-gradient(circle,rgba(168,216,200,0.4)_0%,transparent_70%)] animate-float-reverse" />
-
-        <div className="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center w-full">
-          <div className="text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-white border border-rose text-rose-deep text-xs font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider shadow-md shadow-rose/20 animate-fade-slide-up">
-              <span>🌸</span> Porque seu filho merece o melhor!
-            </div>
-            <h1 className="text-[clamp(2.2rem,5vw,3.8rem)] leading-tight text-foreground mb-5 animate-fade-slide-up [animation-delay:0.1s]">
-              Roupinhas que contam{' '}
-              <em className="italic text-rose-deep not-italic">histórias de infância</em>
-            </h1>
-            <p className="text-[1.05rem] text-muted-foreground mb-8 max-w-[420px] animate-fade-slide-up [animation-delay:0.2s] mx-auto md:mx-0">
-              De 0 a 16 anos, cada peça é escolhida com carinho para vestir os
-              pequenos com conforto, qualidade e muito estilo. Compre pelo
-              WhatsApp e receba em casa! 💗
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start animate-fade-slide-up [animation-delay:0.3s]">
-              <a
-                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de ver as roupinhas 💗')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="default" className="w-full sm:w-auto bg-green-500 hover:bg-green-600">
-                  💬 Comprar agora
-                </Button>
-              </a>
-              <a href="#destaques" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full">Ver destaques ↓</Button>
-              </a>
-            </div>
-          </div>
-
-          <div className="flex justify-center items-center animate-fade-slide-up [animation-delay:0.2s] order-first md:order-none">
-            <div className="relative">
-              {/* Floating pills */}
-              <div className="hidden sm:flex absolute top-[10%] md:-right-[10%] right-[-5%] z-10 bg-white rounded-full px-4 py-2 shadow-lg text-xs font-bold text-rose-deep items-center gap-1.5 animate-float whitespace-nowrap">
-                ⭐ +500 famílias
-              </div>
-              <div className="hidden sm:flex absolute bottom-[15%] md:-left-[5%] left-[-5%] z-10 bg-white rounded-full px-4 py-2 shadow-lg text-xs font-bold text-mint items-center gap-1.5 animate-float [animation-delay:2s] whitespace-nowrap">
-                🚚 Entrega em casa
-              </div>
-
-              {/* Blob image frame */}
-              <div className="w-[220px] h-[240px] sm:w-[280px] sm:h-[300px] md:w-[400px] md:h-[450px] bg-white rounded-[40%_60%_60%_40%_/_50%_40%_60%_50%] flex items-center justify-center shadow-xl shadow-rose/30 border-[3px] border-rose/30 overflow-hidden animate-morph-blob">
-                <Image
-                  className="object-cover"
-                  src="/main_img.jpg"
-                  alt="mãe vestindo o filho"
-                  width={430}
-                  height={450}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       {/* ── DESTAQUES ── */}
       <section id="destaques" className="py-14 px-4 sm:py-20 sm:px-8 bg-cream">
