@@ -82,22 +82,22 @@ export default function Destaques() {
         'linear-gradient(135deg,#FDE8EE,#E8D5F5)',
     ]
     return (
-        <div className="max-w-[1200px] mx-auto md:mb-10">
-            <div className="text-center mb-8 sm:mb-12">
-                <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-3">Peças em destaque</span>
-                <h2 className="font-body text-[clamp(1.8rem,4vw,2.8rem)] font-semibold mb-3 tracking-tighter">As queridinhas do momento</h2>
-                <p className="text-muted-foreground max-w-lg mx-auto">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 md:mb-10">
+            <div className="text-center mb-6 sm:mb-12">
+                <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-2 sm:mb-3">Peças em destaque</span>
+                <h2 className="font-body text-[clamp(1.6rem,4vw,2.8rem)] font-semibold mb-2 sm:mb-3 tracking-tighter">As queridinhas do momento</h2>
+                <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base">
                     Peças selecionadas com muito carinho que estão fazendo sucesso com
                     os pequenos.
                 </p>
             </div>
 
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3 sm:gap-6">
                 {loadingProdutos ? (
                     Array.from({ length: 4 }).map((_, i) => (
-                        <Card key={i} className="overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm p-0">
-                            <Skeleton className="h-56 w-full rounded-none" />
-                            <CardContent className="p-5 space-y-3">
+                        <Card key={i} className="overflow-hidden border border-brand-border rounded-2xl sm:rounded-2xl bg-white shadow-sm p-0">
+                            <Skeleton className="h-40 sm:h-56 w-full rounded-none" />
+                            <CardContent className="p-3 sm:p-5 space-y-2 sm:space-y-3">
                                 <Skeleton className="h-5 w-3/4" />
                                 <Skeleton className="h-4 w-1/2" />
                                 <Skeleton className="h-9 w-full" />
@@ -110,7 +110,7 @@ export default function Destaques() {
                     destaques.map((p, i) => (
                         <Card key={'image' in p ? (p as typeof highlights[0]).name : (p as Produto).id} className="group overflow-hidden border border-brand-border rounded-2xl bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 p-0">
                             <div
-                                className="relative h-56 overflow-hidden flex items-center justify-center"
+                                className="relative h-40 sm:h-56 overflow-hidden flex items-center justify-center"
                                 style={{ background: bgColors[i % bgColors.length] }}
                             >
                                 <Image
@@ -119,21 +119,21 @@ export default function Destaques() {
                                     fill
                                     className="object-cover transition-transform group-hover:scale-105"
                                 />
-                                <Badge className="absolute top-3 left-3 z-10 bg-rose-deep text-white hover:bg-rose-deep">
+                                <Badge className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-rose-deep text-white hover:bg-rose-deep text-[10px] sm:text-xs">
                                     {'badge' in p ? (p as typeof highlights[0]).badge : (p as Produto).badge}
                                 </Badge>
                             </div>
-                            <CardContent className="p-5">
-                                <div className="font-body font-semibold text-foreground text-lg mb-1">
+                            <CardContent className="p-3 sm:p-5">
+                                <div className="font-body font-semibold text-foreground text-sm sm:text-lg mb-0.5 sm:mb-1 leading-snug">
                                     {'name' in p ? (p as typeof highlights[0]).name : (p as Produto).nome}
                                 </div>
-                                <div className="text-sm text-muted-foreground mb-4">
+                                <div className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
                                     {'age' in p
                                         ? (p as typeof highlights[0]).age
                                         : (p as Produto).faixa_etaria || 'Todas as idades'}
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm font-semibold text-muted-foreground">
+                                    <span className="text-xs sm:text-sm font-semibold text-muted-foreground">
                                         {'preco' in p && (p as Produto).preco
                                             ? `R$ ${(p as Produto).preco.toFixed(2).replace('.', ',')}`
                                             : 'Consulte valor 💬'}
@@ -143,7 +143,7 @@ export default function Destaques() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600">
+                                        <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600 text-xs h-8 px-3 sm:px-4">
                                             💬 Pedir
                                         </Button>
                                     </a>
