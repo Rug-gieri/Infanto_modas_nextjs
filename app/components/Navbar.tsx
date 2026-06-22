@@ -15,9 +15,6 @@ const navLinks = [
   { label: 'Início', href: '#inicio' },
   { label: 'Categorias', href: '#categorias' },
   { label: 'Destaques', href: '#destaques' },
-  { label: 'Por Idade', href: '#por-idade' },
-  { label: 'Galeria', href: '#galeria' },
-  { label: 'Depoimentos', href: '#depoimentos' },
   { label: 'Cadastro', href: '#cadastro' },
 ]
 
@@ -60,22 +57,14 @@ export default function Navbar() {
                 size="sm"
                 className="rounded-full bg-rose-deep text-primary-foreground hover:bg-charcoal"
               >
-                💬 Comprar
+                Comprar
               </Button>
             </a>
           </li>
         </ul>
 
         {/* Mobile hamburger */}
-        <button
-          className="md:hidden absolute right-6 flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1"
-          onClick={() => setOpen(true)}
-          aria-label="Abrir menu"
-        >
-          <span className="block w-6 h-[2px] bg-charcoal rounded-sm" />
-          <span className="block w-6 h-[2px] bg-charcoal rounded-sm" />
-          <span className="block w-6 h-[2px] bg-charcoal rounded-sm" />
-        </button>
+
       </nav>
 
       {/* Sheet — outside nav to avoid flex layout interference */}
