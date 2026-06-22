@@ -5,10 +5,10 @@ Landing page para loja de roupas infantis com administração integrada. Desenvo
 ## Stack
 
 - **Framework:** Next.js 14 (App Router)
-- **Estilo:** Tailwind CSS v4 + shadcn/ui (base-ui/react, style: base-nova)
-- **Banco:** PostgreSQL via `pg`
+- **Estilo:** Tailwind CSS v4 + shadcn/ui v4 (base-ui/react, style: base-nova)
+- **Banco:** PostgreSQL via `pg` (4 tabelas: clientes, produtos, pedidos, pedido_itens)
 - **Ícones:** lucide-react
-- **Fontes:** Playfair Display + Nunito (`next/font/google`)
+- **Fontes:** Playfair Display (`--font-display`) + Nunito (`--font-body`) via `next/font/google`
 
 ## Comandos
 
@@ -16,7 +16,7 @@ Landing page para loja de roupas infantis com administração integrada. Desenvo
 |---------|-----------|
 | `npm run dev` | Servidor de desenvolvimento em `http://localhost:3000` |
 | `npm run build` | Build de produção (TypeScript + Next.js) |
-| `npm start` | Inicia servidor de produção |
+| `npm run start` | Inicia servidor de produção |
 
 ## Variáveis de Ambiente
 
@@ -42,18 +42,27 @@ app/
 │   ├── CadastroForm.tsx     # Formulário de newsletter/cadastro
 │   ├── Footer.tsx           # Rodapé do site
 │   ├── Gallery.tsx          # Galeria de fotos
+│   ├── HeroCarousel.tsx     # Carrossel hero (4 slides, touch)
 │   ├── Navbar.tsx           # Navegação desktop + menu mobile (Sheet)
 │   ├── Testimonials.tsx     # Depoimentos de clientes
-│   └── WhatsAppButton.tsx   # Botão WhatsApp (link + floating FAB)
+│   ├── WhatsAppButton.tsx   # Botão WhatsApp (link + floating FAB)
+│   ├── AdminSidebar.tsx     # Sidebar do painel admin
+│   ├── AdminDashboard.tsx   # Métricas do dashboard (4 cards)
+│   ├── AdminClientes.tsx    # CRUD clientes + CSV + popup pedidos
+│   ├── AdminProdutos.tsx    # CRUD produtos + ativar/desativar
+│   └── AdminPedidos.tsx     # Kanban de pedidos + criação
 ├── (shop)/
 │   └── layout.tsx           # Layout para futuras páginas de loja
 ├── admin/
 │   ├── layout.tsx           # Tema bubblegum (pink/candy)
-│   └── page.tsx             # Login + dashboard de clientes
+│   └── page.tsx             # Login + painel completo (4 abas)
 └── api/
     ├── admin/login/         # POST — autenticação admin (retorna token)
-    ├── clientes/            # POST — cadastro | GET — lista (autenticado)
-    └── init-db/             # GET — inicializa tabela clientes
+    ├── admin/dashboard/     # GET — métricas do dashboard
+    ├── clientes/            # POST/GET/PUT/DELETE — CRUD clientes
+    ├── produtos/            # POST/GET/PUT/DELETE — CRUD produtos
+    ├── pedidos/             # POST/GET/PUT/DELETE — CRUD pedidos
+    └── init-db/             # GET — inicializa as 4 tabelas
 ```
 
 ## Design System
@@ -78,12 +87,14 @@ app/
 
 ## API
 
-| Rota | Método | Auth | Descrição |
-|------|--------|------|-----------|
-| `/api/clientes` | `POST` | — | Cadastro de cliente (nome, email, telefone, newsletter) |
-| `/api/clientes` | `GET` | `x-admin-token` | Lista todos os clientes |
+| Rota | Métodos | Auth | Descrição |
+|------|---------|------|-----------|
+| `/api/clientes` | `POST` / `GET` / `PUT` / `DELETE` | GET/PUT/DELETE: `x-admin-token` | CRUD clientes |
+| `/api/produtos` | `POST` / `GET` / `PUT` / `DELETE` | POST/PUT/DELETE: `x-admin-token`; GET público (só ativos) | CRUD produtos com filtro por categoria |
+| `/api/pedidos` | `POST` / `GET` / `PUT` / `DELETE` | `x-admin-token` | CRUD pedidos com itens e transição de status |
 | `/api/admin/login` | `POST` | — | Autenticação admin (retorna token) |
-| `/api/init-db` | `GET` | — | Cria tabela `clientes` no banco |
+| `/api/admin/dashboard` | `GET` | `x-admin-token` | Métricas: total clientes, produtos ativos, pedidos do mês, receita |
+| `/api/init-db` | `GET` | — | Cria as 4 tabelas (clientes, produtos, pedidos, pedido_itens) |
 
 ## Responsividade
 
@@ -96,3 +107,4 @@ app/
 - O fluxo de compras é finalizado via WhatsApp (número `5569992327118`)
 - Erro `ECONNREFUSED ::1:5432` no build é esperado — as API routes tentam conectar ao PostgreSQL local durante SSG
 - Verificação visual com `npm run dev` (não há testes automatizados)
+- Admin: senha definida via `ADMIN_SECRET`; autenticação via token armazenado em `localStorage`

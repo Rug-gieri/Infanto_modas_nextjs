@@ -34,7 +34,7 @@ export default function WhatsAppButton({
   return (
     <a href={url} target="_blank" rel="noopener noreferrer">
       <Button variant="default" className="bg-green-500 hover:bg-green-600">
-        💬 {label}
+        {label}
       </Button>
     </a>
   )
