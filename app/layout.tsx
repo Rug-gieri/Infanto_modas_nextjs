@@ -39,7 +39,7 @@ export default function RootLayout({
       <body className={cn(playfairDisplay.variable, nunito.variable, 'font-body', 'theme-main')}>
         <AnnouncementBar />
         <Navbar />
-        <main className="pb-20 md:pb-0">{children}</main>
+        <main className="pb-0 md:pb-0">{children}</main>
         <Footer />
         <BottomNav />
       </body>

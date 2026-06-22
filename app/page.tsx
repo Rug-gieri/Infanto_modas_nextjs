@@ -184,11 +184,11 @@ export default function Home() {
       <HeroCarousel />
 
       {/* ── DESTAQUES ── */}
-      <section id="destaques" className="py-14 px-4 sm:py-20 sm:px-8 bg-cream">
+      <section id="destaques" className="py-4 px-4 sm:py-20 sm:px-8 bg-cream">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-3">Peças em destaque</span>
-            <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] text-foreground mb-3 leading-tight">As queridinhas do momento ✨</h2>
+            <h2 className="font-body text-[clamp(1.8rem,4vw,2.8rem)] font-semibold mb-3 tracking-tighter">As queridinhas do momento</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
               Peças selecionadas com muito carinho que estão fazendo sucesso com
               os pequenos.
@@ -227,7 +227,7 @@ export default function Home() {
                     </Badge>
                   </div>
                   <CardContent className="p-5">
-                    <div className="font-display font-semibold text-foreground text-lg mb-1">
+                    <div className="font-body font-semibold text-foreground text-lg mb-1">
                       {'name' in p ? (p as typeof highlights[0]).name : (p as Produto).nome}
                     </div>
                     <div className="text-sm text-muted-foreground mb-4">
@@ -259,7 +259,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── GUIA POR IDADE ── */}
+      {/* ── GUIA POR IDADE ──
       <section id="por-idade" className="py-14 px-4 sm:py-20 sm:px-8 bg-warm-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-8 sm:mb-12">
@@ -322,43 +322,86 @@ export default function Home() {
             ))}
           </Tabs>
         </div>
-      </section>
+      </section> */}
 
       {/* ── GALERIA ── */}
-     
+
 
       {/* ── WHATSAPP CTA ── */}
-      <section className="py-14 px-4 sm:py-20 sm:px-8 bg-gradient-to-br from-rose-light to-mint-light">
-        <div className="max-w-[600px] mx-auto">
-          <Card className="bg-white/90 backdrop-blur-lg border border-brand-border/60 rounded-[28px] p-10 text-center shadow-xl shadow-rose/15">
-            <CardContent className="p-0">
-              <span className="text-5xl mb-4 block">💬</span>
-              <h2 className="font-display text-[clamp(1.6rem,3vw,2.2rem)] text-foreground mb-3">
-                Compre pelo WhatsApp
+      <section className="bg-[#F7F7F8] px-6 py-24">
+        <div className="mx-auto max-w-3xl space-y-12">
+          <Card className="rounded-[32px] border border-black/5 bg-white shadow-sm">
+            <CardContent className="px-8 py-16 sm:px-14 sm:py-20 text-center">
+
+              <h2 className="text-4xl font-semibold tracking-tight text-[#111827] sm:text-5xl">
+                Compre sem sair de casa.
               </h2>
-              <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-                Atendimento personalizado, tire suas dúvidas, peça fotos dos produtos
-                e receba tudo no conforto da sua casa. Simples assim!
+
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-neutral-500">
+                Fale conosco pelo WhatsApp, receba atendimento personalizado
+                e tenha seus produtos entregues onde estiver.
               </p>
-              <div className="flex flex-col sm:flex-row items-center sm:justify-center gap-4 sm:gap-6 mb-8">
-                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
-                  ✅ Atendimento rápido
-                </Badge>
-                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
-                  🚚 Entrega em domicílio
-                </Badge>
-                <Badge variant="secondary" className="text-sm py-2 px-4 rounded-full">
-                  🔒 Compra segura
-                </Badge>
+
+              <div className="mt-12 flex justify-center">
+                <WhatsAppButton
+                  label="Conversar no WhatsApp"
+                  variant="primary"
+                />
               </div>
-              <WhatsAppButton label="Falar com a loja agora" variant="primary" />
+
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm text-neutral-400">
+                <span>Atendimento rápido</span>
+
+                <span className="h-1 w-1 rounded-full bg-neutral-300" />
+
+                <span>Compra segura</span>
+
+                <span className="h-1 w-1 rounded-full bg-neutral-300" />
+
+                <span>Entrega no mesmo dia</span>
+              </div>
+
             </CardContent>
+          </Card>
+
+          <Card className="rounded-[32px] border border-black/5 bg-white shadow-sm overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="px-8 py-12 sm:px-10 sm:py-16">
+                <span className="text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">
+                  Onde estamos
+                </span>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#111827] sm:text-3xl">
+                  Venha nos conhecer
+                </h3>
+                <p className="mt-4 text-base leading-7 text-neutral-500">
+                  Rua José Bonifácio, 3067<br />
+                  Centro, Porto Velho - RO<br />
+                  76801-094
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-sm text-neutral-400">
+                  <span>Seg–Sex: 08:00–18:00</span>
+                  <span className="h-1 w-1 rounded-full bg-neutral-300" />
+                  <span>Sáb: 08:00–13:00</span>
+                </div>
+              </div>
+              <div className="relative min-h-[280px] md:min-h-full">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.226166325062!2d-63.9034323!3d-8.764779699999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92325cdc5d2b75ff%3A0xb3c5d956f6a5fbd0!2sInfanto%20Modas!5e0!3m2!1spt-BR!2sbr!4v1782085354746!5m2!1spt-BR!2sbr"
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Infanto Modas"
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </section>
 
       {/* ── FLOATING WA BUTTON ── */}
-      <WhatsAppButton variant="floating" />
+      {/* <WhatsAppButton variant="floating" /> */}
     </>
   )
 }
