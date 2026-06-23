@@ -6,7 +6,7 @@ Landing page para loja de roupas infantis com administração integrada. Desenvo
 
 - **Framework:** Next.js 14 (App Router)
 - **Estilo:** Tailwind CSS v4 + shadcn/ui v4 (base-ui/react, style: base-nova)
-- **Banco:** PostgreSQL via `pg` (4 tabelas: clientes, produtos, pedidos, pedido_itens)
+- **Banco:** PostgreSQL via `pg` e `DATABASE_URL`
 - **Ícones:** lucide-react
 - **Fontes:** Playfair Display (`--font-display`) + Nunito (`--font-body`) via `next/font/google`
 
@@ -24,6 +24,17 @@ Landing page para loja de roupas infantis com administração integrada. Desenvo
 |----------|-----------|
 | `DATABASE_URL` | String de conexão PostgreSQL |
 | `ADMIN_SECRET` | Senha/token do painel administrativo |
+
+## Railway
+
+1. Crie um projeto no Railway com `Next.js` e um serviço `PostgreSQL`.
+2. Defina `DATABASE_URL` e `ADMIN_SECRET` nas variáveis de ambiente.
+3. Rode `/api/init-db` uma vez para criar o schema inicial.
+4. No deploy, o app usa `DATABASE_URL` automaticamente.
+
+## Schema
+
+O schema fica em `database/schema.sql`.
 
 ## Estrutura
 
@@ -108,3 +119,9 @@ app/
 - Erro `ECONNREFUSED ::1:5432` no build é esperado — as API routes tentam conectar ao PostgreSQL local durante SSG
 - Verificação visual com `npm run dev` (não há testes automatizados)
 - Admin: senha definida via `ADMIN_SECRET`; autenticação via token armazenado em `localStorage`
+
+## Pendências
+
+- Evoluir o projeto para um fluxo de migrações SQL versionadas.
+- Remover o uso de `/api/init-db` como forma principal de inicialização do banco.
+- Automatizar a aplicação do schema no deploy do Railway.
