@@ -125,3 +125,59 @@ app/
 - Evoluir o projeto para um fluxo de migrações SQL versionadas.
 - Remover o uso de `/api/init-db` como forma principal de inicialização do banco.
 - Automatizar a aplicação do schema no deploy do Railway.
+
+## Bot do Telegram
+
+Planejamento do bot administrativo do Telegram, restrito a um `telegram user id` autorizado.
+
+### Objetivo
+
+Permitir o cadastro e a manutenção de produtos pelo Telegram, reduzindo a dependência do painel web para entrada de novos itens.
+
+### Fluxo de cadastro
+
+1. O admin envia uma foto para o bot.
+2. O bot solicita o nome do produto.
+3. O bot solicita a marca/fabricante.
+4. O bot solicita o valor.
+5. O bot solicita a categoria/público.
+6. O bot solicita o tipo do produto.
+7. O bot solicita o status.
+8. O bot exibe um resumo final.
+9. O admin confirma e o produto é salvo.
+
+### Campos do produto
+
+- `nome`
+- `marca_fabricante`
+- `preco`
+- `categoria`
+- `tipo`
+- `status`
+- `imagem_url`
+
+### Valores sugeridos
+
+- `categoria`: `bebe`, `feminino`, `masculino`
+- `tipo`: `camiseta`, `short`, `kit`, `vestido`, `conjunto`, `body`, `macacao`, `outro`
+- `status`: `disponivel`, `vendido`
+
+### Regras de exibição no site
+
+- `disponivel` entra no catálogo da loja.
+- `vendido` aparece como `Mais vendidos`.
+- O site pode usar o campo `status` para separar listas e destaques.
+
+### Segurança
+
+- O bot aceita comandos apenas do `telegram user id` autorizado.
+- O token do bot e dados sensíveis devem ficar em variáveis de ambiente.
+- O bot não deve aceitar cadastro ou alteração de produto de usuários não autorizados.
+
+### Próximas etapas planejadas
+
+- Cadastro de produto via conversa no Telegram.
+- Upload da imagem para storage externo.
+- Alteração de status de produto via bot.
+- Remoção de produto via bot.
+- Notificação de pedido confirmado no Telegram.
