@@ -154,6 +154,7 @@ Permitir o cadastro e a manutenção de produtos pelo Telegram, reduzindo a depe
 - `categoria`
 - `tipo`
 - `status`
+- `Tamanhoa/Idade`
 - `imagem_url`
 
 ### Valores sugeridos
