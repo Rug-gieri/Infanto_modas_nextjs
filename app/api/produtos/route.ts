@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '../../lib/db'
+import { handleCorsOptions, jsonWithCors } from '../../lib/cors'
 
 function checkAuth(req: NextRequest) {
   const authHeader = req.headers.get('x-admin-token')
   return authHeader === process.env.ADMIN_SECRET
+}
+
+export function OPTIONS(req: NextRequest) {
+  return handleCorsOptions(req)
 }
 
 export async function GET(req: NextRequest) {
@@ -17,15 +22,15 @@ export async function GET(req: NextRequest) {
       const result = await pool.query(
         'SELECT * FROM produtos WHERE ativo = true ORDER BY criado_em DESC'
       )
-      return NextResponse.json({ produtos: result.rows })
+      return jsonWithCors(req, { produtos: result.rows })
     } catch (err) {
       console.error('Erro ao listar produtos públicos:', err)
-      return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+      return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
     }
   }
 
   if (!authenticated) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -40,16 +45,16 @@ export async function GET(req: NextRequest) {
     query += ' ORDER BY criado_em DESC'
 
     const result = await pool.query(query, params.length ? params : undefined)
-    return NextResponse.json({ produtos: result.rows })
+    return jsonWithCors(req, { produtos: result.rows })
   } catch (err) {
     console.error('Erro ao listar produtos:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
 
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -57,7 +62,8 @@ export async function POST(req: NextRequest) {
     const { nome, descricao, preco, categoria, faixa_etaria, imagem_url, badge, ativo } = body
 
     if (!nome || preco == null || preco <= 0 || !categoria || !imagem_url) {
-      return NextResponse.json(
+      return jsonWithCors(
+        req,
         { error: 'Nome, preço (maior que zero), categoria e imagem são obrigatórios.' },
         { status: 400 }
       )
@@ -70,19 +76,20 @@ export async function POST(req: NextRequest) {
       [nome, descricao || null, preco, categoria, faixa_etaria || null, imagem_url, badge || null, ativo ?? true]
     )
 
-    return NextResponse.json(
+    return jsonWithCors(
+      req,
       { message: 'Produto criado com sucesso!', produto: result.rows[0] },
       { status: 201 }
     )
   } catch (err: any) {
     console.error('Erro ao criar produto:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
 
 export async function PUT(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -90,12 +97,12 @@ export async function PUT(req: NextRequest) {
     const { id } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'ID do produto é obrigatório.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'ID do produto é obrigatório.' }, { status: 400 })
     }
 
     const exists = await pool.query('SELECT id FROM produtos WHERE id = $1', [id])
     if (exists.rows.length === 0) {
-      return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 404 })
+      return jsonWithCors(req, { error: 'Produto não encontrado.' }, { status: 404 })
     }
 
     const fields: string[] = []
@@ -112,7 +119,7 @@ export async function PUT(req: NextRequest) {
     }
 
     if (fields.length === 0) {
-      return NextResponse.json({ error: 'Nenhum campo para atualizar.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'Nenhum campo para atualizar.' }, { status: 400 })
     }
 
     values.push(id)
@@ -121,16 +128,16 @@ export async function PUT(req: NextRequest) {
       values
     )
 
-    return NextResponse.json({ message: 'Produto atualizado com sucesso!', produto: result.rows[0] })
+    return jsonWithCors(req, { message: 'Produto atualizado com sucesso!', produto: result.rows[0] })
   } catch (err: any) {
     console.error('Erro ao atualizar produto:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
 
 export async function DELETE(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -138,19 +145,19 @@ export async function DELETE(req: NextRequest) {
     const { id } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'ID do produto é obrigatório.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'ID do produto é obrigatório.' }, { status: 400 })
     }
 
     const exists = await pool.query('SELECT id FROM produtos WHERE id = $1', [id])
     if (exists.rows.length === 0) {
-      return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 404 })
+      return jsonWithCors(req, { error: 'Produto não encontrado.' }, { status: 404 })
     }
 
     await pool.query('DELETE FROM produtos WHERE id = $1', [id])
 
-    return NextResponse.json({ message: 'Produto removido com sucesso.' })
+    return jsonWithCors(req, { message: 'Produto removido com sucesso.' })
   } catch (err: any) {
     console.error('Erro ao excluir produto:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }

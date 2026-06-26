@@ -144,26 +144,6 @@
   --radius: 0.75rem;
 }
 
-/* ─── Bubblegum Theme (admin — candy / pink palette) ─── */
-.theme-bubblegum {
-  --primary: #FF69B4;
-  --primary-foreground: #FFFFFF;
-  --secondary: #FFB6C1;
-  --secondary-foreground: #2D2D2D;
-  --background: #FFF0F5;
-  --foreground: #2D2D2D;
-  --card: #FFFFFF;
-  --card-foreground: #2D2D2D;
-  --muted: #FFE4EC;
-  --muted-foreground: #9A8A8A;
-  --accent: #FF85B3;
-  --accent-foreground: #FFFFFF;
-  --border: #FFD1DC;
-  --input: #FFD1DC;
-  --ring: #FF69B4;
-  --radius: 1rem;
-}
-
 @layer base {
   *,
   *::before,

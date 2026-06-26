@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '../../../lib/db'
+import { handleCorsOptions, jsonWithCors } from '../../../lib/cors'
+
+export function OPTIONS(req: NextRequest) {
+  return handleCorsOptions(req)
+}
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('x-admin-token')
 
   if (authHeader !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -25,7 +30,7 @@ export async function GET(req: NextRequest) {
       ),
     ])
 
-    return NextResponse.json({
+    return jsonWithCors(req, {
       totalClientes: clientesResult.rows[0].total,
       produtosAtivos: produtosAtivosResult.rows[0].total,
       pedidosDoMes: pedidosMesResult.rows[0].total,
@@ -33,6 +38,6 @@ export async function GET(req: NextRequest) {
     })
   } catch (err) {
     console.error('Erro ao buscar métricas do dashboard:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }

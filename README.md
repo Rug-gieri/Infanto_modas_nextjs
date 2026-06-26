@@ -1,6 +1,6 @@
 # Infanto Modas
 
-Landing page para loja de roupas infantis com administração integrada. Desenvolvido em **Next.js 14 (App Router)** com TypeScript.
+Landing page da loja de roupas infantis com API integrada para consumo do site publico e do app administrativo externo. Desenvolvido em **Next.js 14 (App Router)** com TypeScript.
 
 ## Stack
 
@@ -24,11 +24,12 @@ Landing page para loja de roupas infantis com administração integrada. Desenvo
 |----------|-----------|
 | `DATABASE_URL` | String de conexão PostgreSQL |
 | `ADMIN_SECRET` | Senha/token do painel administrativo |
+| `ADMIN_APP_ORIGIN` | Origem permitida para o app admin separado, ex: `http://localhost:3001` |
 
 ## Railway
 
 1. Crie um projeto no Railway com `Next.js` e um serviço `PostgreSQL`.
-2. Defina `DATABASE_URL` e `ADMIN_SECRET` nas variáveis de ambiente.
+2. Defina `DATABASE_URL`, `ADMIN_SECRET` e `ADMIN_APP_ORIGIN` nas variáveis de ambiente.
 3. Rode `/api/init-db` uma vez para criar o schema inicial.
 4. No deploy, o app usa `DATABASE_URL` automaticamente.
 
@@ -41,9 +42,10 @@ O schema fica em `database/schema.sql`.
 ```
 app/
 ├── globals.css              # Tailwind + design tokens + animações
-├── layout.tsx               # Layout raiz (Navbar, Footer, BottomNav)
+├── layout.tsx               # Layout raiz do site publico
 ├── page.tsx                 # Landing page (seções: hero, categorias, destaques, galeria, depoimentos, cadastro)
 ├── lib/
+│   ├── cors.ts              # Helpers de CORS para o admin externo
 │   ├── db.ts                # Pool de conexão PostgreSQL
 │   └── utils.ts             # Utilitário cn() (clsx + tailwind-merge)
 ├── components/
@@ -56,20 +58,12 @@ app/
 │   ├── HeroCarousel.tsx     # Carrossel hero (4 slides, touch)
 │   ├── Navbar.tsx           # Navegação desktop + menu mobile (Sheet)
 │   ├── Testimonials.tsx     # Depoimentos de clientes
-│   ├── WhatsAppButton.tsx   # Botão WhatsApp (link + floating FAB)
-│   ├── AdminSidebar.tsx     # Sidebar do painel admin
-│   ├── AdminDashboard.tsx   # Métricas do dashboard (4 cards)
-│   ├── AdminClientes.tsx    # CRUD clientes + CSV + popup pedidos
-│   ├── AdminProdutos.tsx    # CRUD produtos + ativar/desativar
-│   └── AdminPedidos.tsx     # Kanban de pedidos + criação
+│   └── WhatsAppButton.tsx   # Botão WhatsApp (link + floating FAB)
 ├── (shop)/
 │   └── layout.tsx           # Layout para futuras páginas de loja
-├── admin/
-│   ├── layout.tsx           # Tema bubblegum (pink/candy)
-│   └── page.tsx             # Login + painel completo (4 abas)
 └── api/
-    ├── admin/login/         # POST — autenticação admin (retorna token)
-    ├── admin/dashboard/     # GET — métricas do dashboard
+    ├── admin/login/         # POST — autenticação para o app admin externo
+    ├── admin/dashboard/     # GET — métricas consumidas pelo app admin externo
     ├── clientes/            # POST/GET/PUT/DELETE — CRUD clientes
     ├── produtos/            # POST/GET/PUT/DELETE — CRUD produtos
     ├── pedidos/             # POST/GET/PUT/DELETE — CRUD pedidos
@@ -94,7 +88,6 @@ app/
 ### Temas CSS
 
 - **`.theme-main`** — Rose/mint (site principal)
-- **`.theme-bubblegum`** — Pink/candy, `--radius: 1rem` (admin)
 
 ## API
 
@@ -103,8 +96,8 @@ app/
 | `/api/clientes` | `POST` / `GET` / `PUT` / `DELETE` | GET/PUT/DELETE: `x-admin-token` | CRUD clientes |
 | `/api/produtos` | `POST` / `GET` / `PUT` / `DELETE` | POST/PUT/DELETE: `x-admin-token`; GET público (só ativos) | CRUD produtos com filtro por categoria |
 | `/api/pedidos` | `POST` / `GET` / `PUT` / `DELETE` | `x-admin-token` | CRUD pedidos com itens e transição de status |
-| `/api/admin/login` | `POST` | — | Autenticação admin (retorna token) |
-| `/api/admin/dashboard` | `GET` | `x-admin-token` | Métricas: total clientes, produtos ativos, pedidos do mês, receita |
+| `/api/admin/login` | `POST` | — | Autenticação do app admin externo |
+| `/api/admin/dashboard` | `GET` | `x-admin-token` | Métricas para o app admin externo |
 | `/api/init-db` | `GET` | — | Cria as 4 tabelas (clientes, produtos, pedidos, pedido_itens) |
 
 ## Responsividade
@@ -118,7 +111,8 @@ app/
 - O fluxo de compras é finalizado via WhatsApp (número `5569992327118`)
 - Erro `ECONNREFUSED ::1:5432` no build é esperado — as API routes tentam conectar ao PostgreSQL local durante SSG
 - Verificação visual com `npm run dev` (não há testes automatizados)
-- Admin: senha definida via `ADMIN_SECRET`; autenticação via token armazenado em `localStorage`
+- O painel administrativo foi extraído para um app separado que consome esta API
+- Admin externo: senha definida via `ADMIN_SECRET`; autenticação atual via token enviado em `x-admin-token`
 
 ## Pendências
 

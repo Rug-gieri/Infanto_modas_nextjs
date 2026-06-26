@@ -32,7 +32,6 @@
 
 ### Temas
 - `.theme-main` — Rose/mint (site principal, aplicado no `<body>`)
-- `.theme-bubblegum` — Pink/candy, `--radius: 1rem` (admin, aplicado no layout `/admin`)
 
 ### Padrões de Seção
 ```tsx
@@ -77,7 +76,7 @@
 ```
 app/
 ├── globals.css          # Tailwind + temas + keyframes (275 linhas)
-├── layout.tsx           # Layout raiz (theme-main, BottomNav)
+├── layout.tsx           # Layout raiz do site publico (theme-main, BottomNav)
 ├── page.tsx             # Landing page
 ├── components/
 │   ├── ui/              # shadcn/ui (12 componentes)
@@ -89,13 +88,16 @@ app/
 │   ├── Navbar.tsx
 │   ├── Testimonials.tsx
 │   └── WhatsAppButton.tsx
-├── admin/
-│   ├── layout.tsx       # theme-bubblegum
-│   └── page.tsx         # Login + dashboard clientes
+├── lib/
+│   ├── cors.ts          # Helpers de CORS para o admin externo
+│   └── db.ts
 ├── (shop)/
 │   └── layout.tsx       # theme-main
 └── api/
     ├── admin/login/
+    ├── admin/dashboard/
+    ├── pedidos/
+    ├── produtos/
     ├── clientes/
     └── init-db/
 ```
@@ -106,7 +108,8 @@ app/
 |------|--------|-----------|
 | `/api/clientes` | POST | Cadastro de cliente |
 | `/api/clientes` | GET | Lista clientes (requer `x-admin-token`) |
-| `/api/admin/login` | POST | Autenticação admin (retorna token) |
+| `/api/admin/login` | POST | Autenticação do app admin externo |
+| `/api/admin/dashboard` | GET | Métricas do app admin externo |
 | `/api/init-db` | GET | Inicializa tabela no banco |
 
 ## Notas
@@ -114,3 +117,4 @@ app/
 - Erro `ECONNREFUSED ::1:5432` no build é esperado — API routes tentam conectar ao PostgreSQL local durante SSG. Ignorar.
 - O projeto não tem testes automatizados. Verificação visual com `npm run dev`.
 - O WhatsApp number padrão é `5569992327118`.
+- O painel admin nao vive mais neste repo; este projeto agora expoe o site publico e a API consumida pelo admin separado.

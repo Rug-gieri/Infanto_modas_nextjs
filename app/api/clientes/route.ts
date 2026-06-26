@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '../../lib/db'
+import { handleCorsOptions, jsonWithCors } from '../../lib/cors'
 
 function checkAuth(req: NextRequest) {
   const authHeader = req.headers.get('x-admin-token')
   return authHeader === process.env.ADMIN_SECRET
+}
+
+export function OPTIONS(req: NextRequest) {
+  return handleCorsOptions(req)
 }
 
 // POST — cadastrar novo cliente
@@ -13,7 +18,8 @@ export async function POST(req: NextRequest) {
     const { nome, email, telefone, aceita_newsletter } = body
 
     if (!nome || !email) {
-      return NextResponse.json(
+      return jsonWithCors(
+        req,
         { error: 'Nome e e-mail são obrigatórios.' },
         { status: 400 }
       )
@@ -22,7 +28,8 @@ export async function POST(req: NextRequest) {
     // Verifica se e-mail já existe
     const exists = await pool.query('SELECT id FROM clientes WHERE email = $1', [email])
     if (exists.rows.length > 0) {
-      return NextResponse.json(
+      return jsonWithCors(
+        req,
         { error: 'Este e-mail já está cadastrado.' },
         { status: 409 }
       )
@@ -35,13 +42,15 @@ export async function POST(req: NextRequest) {
       [nome, email, telefone || null, aceita_newsletter ?? true]
     )
 
-    return NextResponse.json(
+    return jsonWithCors(
+      req,
       { message: 'Cadastro realizado com sucesso! 🎉', cliente: result.rows[0] },
       { status: 201 }
     )
   } catch (err: any) {
     console.error('Erro ao cadastrar cliente:', err)
-    return NextResponse.json(
+    return jsonWithCors(
+      req,
       { error: 'Erro interno do servidor.' },
       { status: 500 }
     )
@@ -51,24 +60,24 @@ export async function POST(req: NextRequest) {
 // GET — listar clientes (protegido por header de admin)
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
     const result = await pool.query(
       'SELECT id, nome, email, telefone, aceita_newsletter, criado_em FROM clientes ORDER BY criado_em DESC'
     )
-    return NextResponse.json({ clientes: result.rows })
+    return jsonWithCors(req, { clientes: result.rows })
   } catch (err) {
     console.error('Erro ao listar clientes:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
 
 // PUT — editar cliente
 export async function PUT(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -76,12 +85,12 @@ export async function PUT(req: NextRequest) {
     const { id, nome, email, telefone, aceita_newsletter } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'ID do cliente é obrigatório.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'ID do cliente é obrigatório.' }, { status: 400 })
     }
 
     const exists = await pool.query('SELECT id FROM clientes WHERE id = $1', [id])
     if (exists.rows.length === 0) {
-      return NextResponse.json({ error: 'Cliente não encontrado.' }, { status: 404 })
+      return jsonWithCors(req, { error: 'Cliente não encontrado.' }, { status: 404 })
     }
 
     const fields: string[] = []
@@ -98,7 +107,7 @@ export async function PUT(req: NextRequest) {
     }
 
     if (fields.length === 0) {
-      return NextResponse.json({ error: 'Nenhum campo para atualizar.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'Nenhum campo para atualizar.' }, { status: 400 })
     }
 
     values.push(id)
@@ -107,17 +116,17 @@ export async function PUT(req: NextRequest) {
       values
     )
 
-    return NextResponse.json({ message: 'Cliente atualizado com sucesso!', cliente: result.rows[0] })
+    return jsonWithCors(req, { message: 'Cliente atualizado com sucesso!', cliente: result.rows[0] })
   } catch (err: any) {
     console.error('Erro ao atualizar cliente:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
 
 // DELETE — excluir cliente
 export async function DELETE(req: NextRequest) {
   if (!checkAuth(req)) {
-    return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 })
+    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
   }
 
   try {
@@ -125,18 +134,18 @@ export async function DELETE(req: NextRequest) {
     const { id } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'ID do cliente é obrigatório.' }, { status: 400 })
+      return jsonWithCors(req, { error: 'ID do cliente é obrigatório.' }, { status: 400 })
     }
 
     const result = await pool.query('DELETE FROM clientes WHERE id = $1', [id])
 
     if (result.rowCount === 0) {
-      return NextResponse.json({ error: 'Cliente não encontrado.' }, { status: 404 })
+      return jsonWithCors(req, { error: 'Cliente não encontrado.' }, { status: 404 })
     }
 
-    return NextResponse.json({ message: 'Cliente removido com sucesso.' })
+    return jsonWithCors(req, { message: 'Cliente removido com sucesso.' })
   } catch (err: any) {
     console.error('Erro ao excluir cliente:', err)
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
+    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }
