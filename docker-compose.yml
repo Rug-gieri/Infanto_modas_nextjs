@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: infanto_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: infanto
+      POSTGRES_USER: infanto
+      POSTGRES_PASSWORD: infanto
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+volumes:
+  postgres_data:

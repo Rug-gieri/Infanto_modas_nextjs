@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 
-const WHATSAPP_NUMBER = '5569992327118'
+const WHATSAPP_NUMBER = '556992228016'
 
 const navLinks = [
   { label: 'Início', href: '#inicio' },

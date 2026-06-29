@@ -6,7 +6,7 @@ import HeroCarousel from './components/HeroCarousel'
 import { Card, CardContent } from '@/components/ui/card'
 import Destaques from './components/Destaques'
 
-const WHATSAPP = '5569992327118'
+const WHATSAPP = '556992228016'
 
 const ageGuide = [
   {

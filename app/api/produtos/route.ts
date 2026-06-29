@@ -2,6 +2,35 @@ import { NextRequest, NextResponse } from 'next/server'
 import pool from '../../lib/db'
 import { handleCorsOptions, jsonWithCors } from '../../lib/cors'
 
+function isValidCloudinaryImageUrl(value: unknown) {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && url.hostname === 'res.cloudinary.com'
+  } catch {
+    return false
+  }
+}
+
+function normalizeProduto(produto: Record<string, unknown>) {
+  return {
+    ...produto,
+    preco:
+      typeof produto.preco === 'number'
+        ? produto.preco
+        : typeof produto.preco === 'string'
+          ? Number(produto.preco)
+          : 0,
+  }
+}
+
+function normalizeProdutos(produtos: Record<string, unknown>[]) {
+  return produtos.map(normalizeProduto)
+}
+
 function checkAuth(req: NextRequest) {
   const authHeader = req.headers.get('x-admin-token')
   return authHeader === process.env.ADMIN_SECRET
@@ -22,7 +51,7 @@ export async function GET(req: NextRequest) {
       const result = await pool.query(
         'SELECT * FROM produtos WHERE ativo = true ORDER BY criado_em DESC'
       )
-      return jsonWithCors(req, { produtos: result.rows })
+      return jsonWithCors(req, { produtos: normalizeProdutos(result.rows) })
     } catch (err) {
       console.error('Erro ao listar produtos públicos:', err)
       return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
@@ -45,7 +74,7 @@ export async function GET(req: NextRequest) {
     query += ' ORDER BY criado_em DESC'
 
     const result = await pool.query(query, params.length ? params : undefined)
-    return jsonWithCors(req, { produtos: result.rows })
+    return jsonWithCors(req, { produtos: normalizeProdutos(result.rows) })
   } catch (err) {
     console.error('Erro ao listar produtos:', err)
     return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
@@ -69,6 +98,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    if (!isValidCloudinaryImageUrl(imagem_url)) {
+      return jsonWithCors(
+        req,
+        { error: 'A imagem deve ser uma URL HTTPS válida do Cloudinary.' },
+        { status: 400 }
+      )
+    }
+
     const result = await pool.query(
       `INSERT INTO produtos (nome, descricao, preco, categoria, faixa_etaria, imagem_url, badge, ativo)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -78,7 +115,7 @@ export async function POST(req: NextRequest) {
 
     return jsonWithCors(
       req,
-      { message: 'Produto criado com sucesso!', produto: result.rows[0] },
+      { message: 'Produto criado com sucesso!', produto: normalizeProduto(result.rows[0]) },
       { status: 201 }
     )
   } catch (err: any) {
@@ -110,6 +147,15 @@ export async function PUT(req: NextRequest) {
     let paramIndex = 1
 
     const allowedFields = ['nome', 'descricao', 'preco', 'categoria', 'faixa_etaria', 'imagem_url', 'badge', 'ativo']
+
+    if (body.imagem_url !== undefined && !isValidCloudinaryImageUrl(body.imagem_url)) {
+      return jsonWithCors(
+        req,
+        { error: 'A imagem deve ser uma URL HTTPS válida do Cloudinary.' },
+        { status: 400 }
+      )
+    }
+
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
         fields.push(`${field} = $${paramIndex}`)
@@ -128,7 +174,7 @@ export async function PUT(req: NextRequest) {
       values
     )
 
-    return jsonWithCors(req, { message: 'Produto atualizado com sucesso!', produto: result.rows[0] })
+    return jsonWithCors(req, { message: 'Produto atualizado com sucesso!', produto: normalizeProduto(result.rows[0]) })
   } catch (err: any) {
     console.error('Erro ao atualizar produto:', err)
     return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })

@@ -7,7 +7,7 @@ interface WhatsAppButtonProps {
   variant?: 'primary' | 'floating'
 }
 
-const WHATSAPP_NUMBER = '5569992327118'
+const WHATSAPP_NUMBER = '556992228016'
 
 export default function WhatsAppButton({
   label = 'Compre pelo WhatsApp',

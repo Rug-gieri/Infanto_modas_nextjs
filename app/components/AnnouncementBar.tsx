@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const AnnouncementBar = () => {
-  const whatsappUrl = "https://wa.me/5569992327118?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20frete%20grátis%20em%20Porto%20Velho."
+  const whatsappUrl = "https://wa.me/556992228016?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20frete%20grátis%20em%20Porto%20Velho."
 
   return (
     <Link

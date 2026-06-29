@@ -25,6 +25,7 @@ Landing page da loja de roupas infantis com API integrada para consumo do site p
 | `DATABASE_URL` | String de conexão PostgreSQL |
 | `ADMIN_SECRET` | Senha/token do painel administrativo |
 | `ADMIN_APP_ORIGIN` | Origem permitida para o app admin separado, ex: `http://localhost:3001` |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Nome do cloud no Cloudinary, usado para padronizar a origem das imagens |
 
 ## Railway
 
@@ -105,6 +106,17 @@ app/
 - Mobile-first com breakpoints `sm:` (640px) e `md:` (768px)
 - Navegação mobile: `BottomNav` fixo + Sheet para menu hambúrguer
 - Seções: `py-14 px-4 sm:py-20 sm:px-8`
+
+## Imagens de produtos
+
+- O campo `imagem_url` dos produtos deve receber uma URL HTTPS do Cloudinary.
+- O frontend aceita imagens remotas de `res.cloudinary.com` via `next/image`.
+- A API de produtos rejeita URLs fora do Cloudinary para evitar links inválidos ou imagens hospedadas em outra origem.
+- Exemplo de `imagem_url` válida:
+
+```txt
+https://res.cloudinary.com/<cloud_name>/image/upload/v123/produtos/item.jpg
+```
 
 ## Notas
 
