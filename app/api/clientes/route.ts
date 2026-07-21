@@ -15,7 +15,20 @@ export function OPTIONS(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { nome, email, telefone, aceita_newsletter } = body
+    const {
+      nome,
+      email,
+      telefone,
+      cep,
+      logradouro,
+      numero,
+      complemento,
+      bairro,
+      cidade,
+      estado,
+      referencia,
+      aceita_newsletter,
+    } = body
 
     if (!nome || !email) {
       return jsonWithCors(
@@ -36,10 +49,36 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await pool.query(
-      `INSERT INTO clientes (nome, email, telefone, aceita_newsletter)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, nome, email, telefone, aceita_newsletter, criado_em`,
-      [nome, email, telefone || null, aceita_newsletter ?? true]
+      `INSERT INTO clientes (
+         nome,
+         email,
+         telefone,
+         cep,
+         logradouro,
+         numero,
+         complemento,
+         bairro,
+         cidade,
+         estado,
+         referencia,
+         aceita_newsletter
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       RETURNING id, nome, email, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado, referencia, aceita_newsletter, criado_em`,
+      [
+        nome,
+        email,
+        telefone || null,
+        cep || null,
+        logradouro || null,
+        numero || null,
+        complemento || null,
+        bairro || null,
+        cidade || null,
+        estado || null,
+        referencia || null,
+        aceita_newsletter ?? true,
+      ]
     )
 
     return jsonWithCors(
@@ -65,7 +104,23 @@ export async function GET(req: NextRequest) {
 
   try {
     const result = await pool.query(
-      'SELECT id, nome, email, telefone, aceita_newsletter, criado_em FROM clientes ORDER BY criado_em DESC'
+      `SELECT
+         id,
+         nome,
+         email,
+         telefone,
+         cep,
+         logradouro,
+         numero,
+         complemento,
+         bairro,
+         cidade,
+         estado,
+         referencia,
+         aceita_newsletter,
+         criado_em
+       FROM clientes
+       ORDER BY criado_em DESC`
     )
     return jsonWithCors(req, { clientes: result.rows })
   } catch (err) {
@@ -82,7 +137,21 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const { id, nome, email, telefone, aceita_newsletter } = body
+    const {
+      id,
+      nome,
+      email,
+      telefone,
+      cep,
+      logradouro,
+      numero,
+      complemento,
+      bairro,
+      cidade,
+      estado,
+      referencia,
+      aceita_newsletter,
+    } = body
 
     if (!id) {
       return jsonWithCors(req, { error: 'ID do cliente é obrigatório.' }, { status: 400 })
@@ -97,7 +166,20 @@ export async function PUT(req: NextRequest) {
     const values: (string | number | boolean | null)[] = []
     let paramIndex = 1
 
-    const fieldMap: Record<string, string | undefined> = { nome, email, telefone, aceita_newsletter }
+    const fieldMap: Record<string, string | boolean | undefined> = {
+      nome,
+      email,
+      telefone,
+      cep,
+      logradouro,
+      numero,
+      complemento,
+      bairro,
+      cidade,
+      estado,
+      referencia,
+      aceita_newsletter,
+    }
     for (const [field, value] of Object.entries(fieldMap)) {
       if (value !== undefined) {
         fields.push(`${field} = $${paramIndex}`)
@@ -112,7 +194,8 @@ export async function PUT(req: NextRequest) {
 
     values.push(id)
     const result = await pool.query(
-      `UPDATE clientes SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING id, nome, email, telefone, aceita_newsletter, criado_em`,
+      `UPDATE clientes SET ${fields.join(', ')} WHERE id = $${paramIndex}
+       RETURNING id, nome, email, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado, referencia, aceita_newsletter, criado_em`,
       values
     )
 

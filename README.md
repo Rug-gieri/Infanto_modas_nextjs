@@ -1,118 +1,135 @@
 # Infanto Modas
 
-Landing page da loja de roupas infantis com API integrada para consumo do site publico e do app administrativo externo. Desenvolvido em **Next.js 14 (App Router)** com TypeScript.
+Site publico da loja de roupas infantis com catalogo, carrinho, checkout por PIX manual e API integrada para consumo do proprio site e do app administrativo externo. Desenvolvido em **Next.js 14 (App Router)** com TypeScript.
 
 ## Stack
 
 - **Framework:** Next.js 14 (App Router)
 - **Estilo:** Tailwind CSS v4 + shadcn/ui v4 (base-ui/react, style: base-nova)
 - **Banco:** PostgreSQL via `pg` e `DATABASE_URL`
-- **Ícones:** lucide-react
+- **Icones:** lucide-react
 - **Fontes:** Playfair Display (`--font-display`) + Nunito (`--font-body`) via `next/font/google`
 
 ## Comandos
 
-| Comando | Descrição |
+| Comando | Descricao |
 |---------|-----------|
 | `npm run dev` | Servidor de desenvolvimento em `http://localhost:3000` |
-| `npm run build` | Build de produção (TypeScript + Next.js) |
-| `npm run start` | Inicia servidor de produção |
+| `npm run build` | Build de producao (TypeScript + Next.js) |
+| `npm run start` | Inicia servidor de producao |
 
-## Variáveis de Ambiente
+## Variaveis de Ambiente
 
-| Variável | Descrição |
+| Variavel | Descricao |
 |----------|-----------|
-| `DATABASE_URL` | String de conexão PostgreSQL |
+| `DATABASE_URL` | String de conexao PostgreSQL |
 | `ADMIN_SECRET` | Senha/token do painel administrativo |
 | `ADMIN_APP_ORIGIN` | Origem permitida para o app admin separado, ex: `http://localhost:3001` |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Nome do cloud no Cloudinary, usado para padronizar a origem das imagens |
+| `NEXT_PUBLIC_PIX_KEY` | Chave PIX exibida na pagina de confirmacao do pedido |
+| `NEXT_PUBLIC_PIX_RECEIVER` | Nome do recebedor exibido nas instrucoes de PIX |
 
 ## Railway
 
-1. Crie um projeto no Railway com `Next.js` e um serviço `PostgreSQL`.
-2. Defina `DATABASE_URL`, `ADMIN_SECRET` e `ADMIN_APP_ORIGIN` nas variáveis de ambiente.
-3. Rode `/api/init-db` uma vez para criar o schema inicial.
-4. No deploy, o app usa `DATABASE_URL` automaticamente.
+1. Crie um projeto no Railway com `Next.js` e um servico `PostgreSQL`.
+2. Defina `DATABASE_URL`, `ADMIN_SECRET` e `ADMIN_APP_ORIGIN` nas variaveis de ambiente.
+3. Se usar checkout PIX manual, defina `NEXT_PUBLIC_PIX_KEY` e `NEXT_PUBLIC_PIX_RECEIVER`.
+4. Rode `/api/init-db` uma vez para criar ou atualizar o schema inicial.
+5. No deploy, o app usa `DATABASE_URL` automaticamente.
 
 ## Schema
 
-O schema fica em `database/schema.sql`.
+O schema fica em `database/schema.sql` e hoje cobre:
+
+- `clientes` com dados de contato e endereco
+- `produtos` com catalogo e status de exibicao
+- `pedidos` com snapshot do cliente, endereco, pagamento e observacoes
+- `pedido_itens` com os itens do pedido
 
 ## Estrutura
 
-```
+```txt
 app/
-├── globals.css              # Tailwind + design tokens + animações
-├── layout.tsx               # Layout raiz do site publico
-├── page.tsx                 # Landing page (seções: hero, categorias, destaques, galeria, depoimentos, cadastro)
+├── globals.css               # Tailwind + design tokens + animacoes
+├── layout.tsx                # Layout raiz do site publico
+├── page.tsx                  # Landing page principal
 ├── lib/
-│   ├── cors.ts              # Helpers de CORS para o admin externo
-│   ├── db.ts                # Pool de conexão PostgreSQL
-│   └── utils.ts             # Utilitário cn() (clsx + tailwind-merge)
+│   ├── cors.ts               # Helpers de CORS para o admin externo
+│   ├── db.ts                 # Pool de conexao PostgreSQL
+│   └── shop.ts               # Tipos e helpers de carrinho/checkout
 ├── components/
-│   ├── ui/                  # 12 componentes shadcn/ui
-│   ├── AnnouncementBar.tsx  # Barra superior de frete grátis
-│   ├── BottomNav.tsx        # Navegação fixa mobile
-│   ├── CadastroForm.tsx     # Formulário de newsletter/cadastro
-│   ├── Footer.tsx           # Rodapé do site
-│   ├── Gallery.tsx          # Galeria de fotos
-│   ├── HeroCarousel.tsx     # Carrossel hero (4 slides, touch)
-│   ├── Navbar.tsx           # Navegação desktop + menu mobile (Sheet)
-│   ├── Testimonials.tsx     # Depoimentos de clientes
-│   └── WhatsAppButton.tsx   # Botão WhatsApp (link + floating FAB)
+│   ├── ui/                   # Componentes shadcn/ui
+│   ├── cart/
+│   │   └── CartProvider.tsx  # Estado global do carrinho
+│   ├── AnnouncementBar.tsx   # Barra superior
+│   ├── BottomNav.tsx         # Navegacao fixa mobile
+│   ├── CadastroForm.tsx      # Formulario de newsletter/cadastro
+│   ├── Footer.tsx            # Rodape do site
+│   ├── Gallery.tsx           # Galeria de fotos
+│   ├── HeroCarousel.tsx      # Carrossel hero
+│   ├── Navbar.tsx            # Navegacao desktop + menu mobile
+│   ├── Testimonials.tsx      # Depoimentos de clientes
+│   └── WhatsAppButton.tsx    # Botao WhatsApp
 ├── (shop)/
-│   └── layout.tsx           # Layout para futuras páginas de loja
+│   ├── layout.tsx            # Layout das paginas de loja
+│   ├── produtos/page.tsx     # Catalogo publico
+│   ├── carrinho/page.tsx     # Carrinho persistido no navegador
+│   ├── checkout/page.tsx     # Checkout visitante com endereco
+│   └── pedido/[id]/page.tsx  # Confirmacao do pedido + instrucoes PIX
 └── api/
-    ├── admin/login/         # POST — autenticação para o app admin externo
-    ├── admin/dashboard/     # GET — métricas consumidas pelo app admin externo
-    ├── clientes/            # POST/GET/PUT/DELETE — CRUD clientes
-    ├── produtos/            # POST/GET/PUT/DELETE — CRUD produtos
-    ├── pedidos/             # POST/GET/PUT/DELETE — CRUD pedidos
-    └── init-db/             # GET — inicializa as 4 tabelas
+    ├── admin/login/          # POST - autenticacao para o app admin externo
+    ├── admin/dashboard/      # GET - metricas consumidas pelo app admin externo
+    ├── checkout/             # POST - checkout publico
+    │   └── [id]/             # GET - consulta publica do pedido
+    ├── clientes/             # POST/GET/PUT/DELETE - CRUD clientes
+    ├── produtos/             # POST/GET/PUT/DELETE - CRUD produtos
+    ├── pedidos/              # POST/GET/PUT/DELETE - CRUD pedidos
+    └── init-db/              # GET - inicializa/atualiza o schema
 ```
-
-## Design System
-
-### Cores
-
-| Token | Valor | Uso |
-|-------|-------|-----|
-| `--primary` | `#E07A92` (rose-deep) | Ações principais |
-| `--secondary` | `#A8D8C8` (mint) | Ações secundárias |
-| `--background` | `#FDF8F3` (cream) | Fundo da página |
-| `--foreground` | `#2D2D2D` (charcoal) | Texto principal |
-| `--accent` | `#D4A847` (gold) | Destaques/estrelas |
-| `--muted` | `#E4F5F0` (mint-light) | Fundos suaves |
-| `--border` | `#F0E4E8` | Bordas |
-| `--radius` | `0.75rem` | Arredondamento padrão |
-
-### Temas CSS
-
-- **`.theme-main`** — Rose/mint (site principal)
 
 ## API
 
-| Rota | Métodos | Auth | Descrição |
+| Rota | Metodos | Auth | Descricao |
 |------|---------|------|-----------|
-| `/api/clientes` | `POST` / `GET` / `PUT` / `DELETE` | GET/PUT/DELETE: `x-admin-token` | CRUD clientes |
-| `/api/produtos` | `POST` / `GET` / `PUT` / `DELETE` | POST/PUT/DELETE: `x-admin-token`; GET público (só ativos) | CRUD produtos com filtro por categoria |
-| `/api/pedidos` | `POST` / `GET` / `PUT` / `DELETE` | `x-admin-token` | CRUD pedidos com itens e transição de status |
-| `/api/admin/login` | `POST` | — | Autenticação do app admin externo |
-| `/api/admin/dashboard` | `GET` | `x-admin-token` | Métricas para o app admin externo |
-| `/api/init-db` | `GET` | — | Cria as 4 tabelas (clientes, produtos, pedidos, pedido_itens) |
+| `/api/clientes` | `POST` / `GET` / `PUT` / `DELETE` | GET/PUT/DELETE: `x-admin-token` | CRUD clientes com suporte a endereco |
+| `/api/produtos` | `POST` / `GET` / `PUT` / `DELETE` | POST/PUT/DELETE: `x-admin-token`; GET publico para `?ativos=true` | CRUD produtos com filtro por categoria |
+| `/api/pedidos` | `POST` / `GET` / `PUT` / `DELETE` | `x-admin-token` | CRUD pedidos com itens e transicao de status |
+| `/api/checkout` | `POST` | - | Checkout publico: valida carrinho, cria/atualiza cliente e gera pedido PIX manual |
+| `/api/checkout/[id]` | `GET` | - | Consulta publica do pedido para tela de confirmacao |
+| `/api/admin/login` | `POST` | - | Autenticacao do app admin externo |
+| `/api/admin/dashboard` | `GET` | `x-admin-token` | Metricas para o app admin externo |
+| `/api/init-db` | `GET` | - | Cria e atualiza o schema no banco |
+
+## Fluxo de Compra
+
+### Jornada atual
+
+1. O cliente acessa `/produtos` ou adiciona itens pelos destaques da home.
+2. O carrinho fica salvo no navegador via `localStorage`.
+3. Em `/carrinho`, o cliente ajusta quantidades e segue para o checkout.
+4. Em `/checkout`, o cliente finaliza como visitante com dados pessoais e endereco.
+5. O backend cria ou atualiza o cliente por e-mail, recalcula o total pelo banco e cria o pedido.
+6. Em `/pedido/[id]`, o cliente ve as instrucoes de PIX manual e envia o comprovante por WhatsApp.
+
+### Observacoes do MVP
+
+- O checkout atual nao exige login.
+- O pagamento atual e `PIX manual`.
+- O frete nao e calculado automaticamente nesta versao.
+- O admin continua usando `/api/pedidos` para acompanhamento e atualizacao de status.
 
 ## Responsividade
 
 - Mobile-first com breakpoints `sm:` (640px) e `md:` (768px)
-- Navegação mobile: `BottomNav` fixo + Sheet para menu hambúrguer
-- Seções: `py-14 px-4 sm:py-20 sm:px-8`
+- Navegacao mobile: `BottomNav` fixo + Sheet para menu hamburger
+- Secoes: `py-14 px-4 sm:py-20 sm:px-8`
 
-## Imagens de produtos
+## Imagens de Produtos
 
 - O campo `imagem_url` dos produtos deve receber uma URL HTTPS do Cloudinary.
 - O frontend aceita imagens remotas de `res.cloudinary.com` via `next/image`.
-- A API de produtos rejeita URLs fora do Cloudinary para evitar links inválidos ou imagens hospedadas em outra origem.
-- Exemplo de `imagem_url` válida:
+- A API de produtos rejeita URLs fora do Cloudinary para evitar links invalidos ou imagens hospedadas em outra origem.
+- Exemplo de `imagem_url` valida:
 
 ```txt
 https://res.cloudinary.com/<cloud_name>/image/upload/v123/produtos/item.jpg
@@ -120,17 +137,21 @@ https://res.cloudinary.com/<cloud_name>/image/upload/v123/produtos/item.jpg
 
 ## Notas
 
-- O fluxo de compras é finalizado via WhatsApp (número `5569992327118`)
-- Erro `ECONNREFUSED ::1:5432` no build é esperado — as API routes tentam conectar ao PostgreSQL local durante SSG
-- Verificação visual com `npm run dev` (não há testes automatizados)
-- O painel administrativo foi extraído para um app separado que consome esta API
-- Admin externo: senha definida via `ADMIN_SECRET`; autenticação atual via token enviado em `x-admin-token`
+- O numero padrao de WhatsApp usado no site e `556992228016`.
+- O fluxo principal agora pode ser concluido no proprio site ate a etapa de instrucao de pagamento.
+- O envio do comprovante de PIX continua sendo feito por WhatsApp.
+- Erro `ECONNREFUSED ::1:5432` no build pode acontecer em ambiente local quando API routes tentam conectar ao PostgreSQL durante a geracao.
+- Verificacao visual com `npm run dev`.
+- O projeto nao tem testes automatizados no momento.
+- O painel administrativo foi extraido para um app separado que consome esta API.
 
-## Pendências
+## Pendencias
 
-- Evoluir o projeto para um fluxo de migrações SQL versionadas.
-- Remover o uso de `/api/init-db` como forma principal de inicialização do banco.
-- Automatizar a aplicação do schema no deploy do Railway.
+- Evoluir o projeto para um fluxo de migracoes SQL versionadas.
+- Remover o uso de `/api/init-db` como forma principal de inicializacao do banco.
+- Automatizar a aplicacao do schema no deploy do Railway.
+- Implementar calculo de frete e regras de entrega.
+- Automatizar conciliacao e confirmacao de pagamento PIX.
 
 ## Bot do Telegram
 
@@ -138,19 +159,19 @@ Planejamento do bot administrativo do Telegram, restrito a um `telegram user id`
 
 ### Objetivo
 
-Permitir o cadastro e a manutenção de produtos pelo Telegram, reduzindo a dependência do painel web para entrada de novos itens.
+Permitir o cadastro e a manutencao de produtos pelo Telegram, reduzindo a dependencia do painel web para entrada de novos itens.
 
 ### Fluxo de cadastro
 
 1. O admin envia uma foto para o bot.
 2. O bot solicita o nome do produto.
-3. O bot solicita a marca/fabricante.
+3. O bot solicita a marca ou fabricante.
 4. O bot solicita o valor.
-5. O bot solicita a categoria/público.
+5. O bot solicita a categoria ou publico.
 6. O bot solicita o tipo do produto.
 7. O bot solicita o status.
 8. O bot exibe um resumo final.
-9. O admin confirma e o produto é salvo.
+9. O admin confirma e o produto e salvo.
 
 ### Campos do produto
 
@@ -160,7 +181,7 @@ Permitir o cadastro e a manutenção de produtos pelo Telegram, reduzindo a depe
 - `categoria`
 - `tipo`
 - `status`
-- `Tamanhoa/Idade`
+- `tamanho_idade`
 - `imagem_url`
 
 ### Valores sugeridos
@@ -169,22 +190,27 @@ Permitir o cadastro e a manutenção de produtos pelo Telegram, reduzindo a depe
 - `tipo`: `camiseta`, `short`, `kit`, `vestido`, `conjunto`, `body`, `macacao`, `outro`
 - `status`: `disponivel`, `vendido`
 
-### Regras de exibição no site
+### Regras de exibicao no site
 
-- `disponivel` entra no catálogo da loja.
+- `disponivel` entra no catalogo da loja.
 - `vendido` aparece como `Mais vendidos`.
 - O site pode usar o campo `status` para separar listas e destaques.
 
-### Segurança
+### Seguranca
 
 - O bot aceita comandos apenas do `telegram user id` autorizado.
-- O token do bot e dados sensíveis devem ficar em variáveis de ambiente.
-- O bot não deve aceitar cadastro ou alteração de produto de usuários não autorizados.
+- O token do bot e dados sensiveis devem ficar em variaveis de ambiente.
+- O bot nao deve aceitar cadastro ou alteracao de produto de usuarios nao autorizados.
 
-### Próximas etapas planejadas
+### Proximas etapas planejadas
 
 - Cadastro de produto via conversa no Telegram.
 - Upload da imagem para storage externo.
-- Alteração de status de produto via bot.
-- Remoção de produto via bot.
-- Notificação de pedido confirmado no Telegram.
+- Alteracao de status de produto via bot.
+- Remocao de produto via bot.
+- Notificacao de pedido confirmado no Telegram.
+
+## 21 de jul > vamos otimizar 
+
+- concluir mvp site e cadastro de produtos 
+- entregar no ar

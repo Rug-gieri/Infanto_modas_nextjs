@@ -2,24 +2,28 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { ShoppingCart } from 'lucide-react'
+import { useCart } from './cart/CartProvider'
 
 const WHATSAPP_NUMBER = '556992228016'
 
 const navLinks = [
   { label: 'Início', href: '#inicio' },
-  { label: 'Categorias', href: '#categorias' },
+  { label: 'Produtos', href: '/produtos' },
   { label: 'Destaques', href: '#destaques' },
-  { label: 'Cadastro', href: '#cadastro' },
+  { label: 'Checkout', href: '/checkout' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { itemCount } = useCart()
 
   return (
     <>
@@ -35,33 +39,50 @@ export default function Navbar() {
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-8 list-none">
-          {navLinks.map((l) => (
-            <li key={l.href}>
+          <ul className="hidden md:flex items-center gap-8 list-none">
+            {navLinks.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="relative text-[0.9rem] font-semibold text-soft-gray no-underline transition-colors hover:text-rose-deep after:absolute after:-bottom-[3px] after:left-0 after:h-[2px] after:w-0 after:rounded-sm after:bg-rose after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/carrinho" className="relative hidden md:inline-flex">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full"
+                >
+                  <ShoppingCart className="size-4" />
+                  Carrinho
+                </Button>
+                {itemCount > 0 ? (
+                  <span className="absolute -right-2 -top-2 inline-flex min-w-5 items-center justify-center rounded-full bg-rose-deep px-1.5 text-[0.65rem] font-bold text-white">
+                    {itemCount}
+                  </span>
+                ) : null}
+              </Link>
+            </li>
+            <li>
               <a
-                href={l.href}
-                className="relative text-[0.9rem] font-semibold text-soft-gray no-underline transition-colors hover:text-rose-deep after:absolute after:-bottom-[3px] after:left-0 after:h-[2px] after:w-0 after:rounded-sm after:bg-rose after:transition-all after:duration-300 hover:after:w-full"
+                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex"
               >
-                {l.label}
+                <Button
+                  size="sm"
+                  className="rounded-full bg-rose-deep text-primary-foreground hover:bg-charcoal"
+                >
+                  Atendimento
+                </Button>
               </a>
             </li>
-          ))}
-          <li>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex"
-            >
-              <Button
-                size="sm"
-                className="rounded-full bg-rose-deep text-primary-foreground hover:bg-charcoal"
-              >
-                Comprar
-              </Button>
-            </a>
-          </li>
-        </ul>
+          </ul>
 
         {/* Mobile hamburger */}
 
@@ -94,6 +115,15 @@ export default function Navbar() {
             ))}
           </ul>
           <div className="shrink-0 p-5 pt-3">
+            <Link href="/carrinho" onClick={() => setOpen(false)}>
+              <Button
+                variant="outline"
+                className="mb-3 w-full"
+              >
+                <ShoppingCart className="size-4" />
+                Ver carrinho {itemCount > 0 ? `(${itemCount})` : ''}
+              </Button>
+            </Link>
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"

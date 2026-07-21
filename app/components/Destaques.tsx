@@ -2,25 +2,15 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCart } from './cart/CartProvider'
+import { formatCurrency, normalizeProduto, type Produto } from '@/app/lib/shop'
 
 const WHATSAPP = '556992228016'
-
-interface Produto {
-  id: number
-  nome: string
-  descricao: string | null
-  preco: number
-  categoria: string
-  faixa_etaria: string | null
-  imagem_url: string
-  badge: string | null
-  ativo: boolean
-  criado_em: string
-}
 
 interface ProdutosResponseItem extends Omit<Produto, 'preco'> {
   preco: number | string
@@ -30,6 +20,7 @@ export default function Destaques() {
   const [produtos, setProdutos] = useState<Produto[]>([])
   const [loadingProdutos, setLoadingProdutos] = useState(true)
   const [error, setError] = useState('')
+  const { addItem } = useCart()
 
   useEffect(() => {
     fetch('/api/produtos?ativos=true')
@@ -45,10 +36,7 @@ export default function Destaques() {
       .then((data) => {
         setProdutos(
           Array.isArray(data.produtos)
-            ? data.produtos.map((produto: ProdutosResponseItem) => ({
-              ...produto,
-              preco: typeof produto.preco === 'number' ? produto.preco : Number(produto.preco) || 0,
-            }))
+            ? data.produtos.map((produto: ProdutosResponseItem) => normalizeProduto(produto))
             : []
         )
       })
@@ -68,7 +56,7 @@ export default function Destaques() {
   ]
 
   return (
-    <div className="max-w-[1200px] mx-auto px-5 sm:px-8 md:mb-10">
+    <section id="destaques" className="max-w-[1200px] mx-auto px-5 sm:px-8 md:mb-10">
       <div className="text-center mb-6 sm:mb-12">
         <span className="inline-block text-rose-deep font-bold text-xs uppercase tracking-[0.15em] mb-2 sm:mb-3">Peças em destaque</span>
         <h2 className="font-body text-[clamp(1.6rem,4vw,2.8rem)] font-semibold mb-2 sm:mb-3 tracking-tighter">As queridinhas do momento</h2>
@@ -122,25 +110,48 @@ export default function Destaques() {
                 <div className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
                   {produto.faixa_etaria || 'Todas as idades'}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-semibold text-muted-foreground">
-                    {produto.preco > 0 ? `R$ ${produto.preco.toFixed(2).replace('.', ',')}` : 'Consulte valor 💬'}
-                  </span>
-                  <a
-                    href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${produto.nome} 💗`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="sm" variant="default" className="bg-green-500 hover:bg-green-600 text-xs h-8 px-3 sm:px-4">
-                      💬 Pedir
+                <div className="space-y-3">
+                  <div className="text-xs sm:text-sm font-semibold text-muted-foreground">
+                    {produto.preco > 0 ? formatCurrency(produto.preco) : 'Consulte valor'}
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs"
+                      onClick={() =>
+                        addItem({
+                          produto_id: produto.id,
+                          nome: produto.nome,
+                          preco: produto.preco,
+                          imagem_url: produto.imagem_url,
+                          faixa_etaria: produto.faixa_etaria,
+                        })
+                      }
+                    >
+                      Adicionar
                     </Button>
-                  </a>
+                    <a
+                      href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Olá! Tenho interesse no produto: ${produto.nome} 💗`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button size="sm" variant="default" className="w-full bg-green-500 hover:bg-green-600 text-xs">
+                        WhatsApp
+                      </Button>
+                    </a>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))
         )}
       </div>
-    </div>
+      <div className="mt-8 flex justify-center">
+        <Link href="/produtos">
+          <Button variant="outline" size="lg">Ver todos os produtos</Button>
+        </Link>
+      </div>
+    </section>
   )
 }
