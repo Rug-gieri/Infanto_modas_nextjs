@@ -1,10 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import AnnouncementBar from './components/AnnouncementBar'
-import BottomNav from './components/BottomNav'
-import { CartProvider } from './components/cart/CartProvider'
 import { Playfair_Display, Nunito } from 'next/font/google'
 import { cn } from '@/lib/utils'
 
@@ -37,15 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={cn(playfairDisplay.variable, nunito.variable, 'font-body', 'theme-main')}>
-        <CartProvider>
-          <AnnouncementBar />
-          <Navbar />
-          <main className="pb-24 md:pb-0">{children}</main>
-          <Footer />
-          <BottomNav />
-        </CartProvider>
-      </body>
+      <body className={cn(playfairDisplay.variable, nunito.variable, 'font-body')}>{children}</body>
     </html>
   )
 }

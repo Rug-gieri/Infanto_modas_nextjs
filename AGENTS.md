@@ -4,7 +4,8 @@
 
 | Comando | Descrição |
 |---------|-----------|
-| `npm run dev` | Servidor de desenvolvimento (Next.js) |
+| `npm install` | Instala dependências |
+| `npm run dev` | Servidor de desenvolvimento (Next.js) em `http://localhost:3000` |
 | `npm run build` | Build de produção (verifica TypeScript + compila) |
 | `npm run start` | Inicia servidor de produção |
 
@@ -15,13 +16,14 @@
 - **Banco:** PostgreSQL via `pg` (API routes em `/api/`)
 - **Fontes:** Playfair Display (`next/font/google`, `--font-display`) + Nunito (`--font-body`)
 - **Ícones:** lucide-react
+- **Uploads:** Cloudinary (SDK server-side, apenas no admin)
 
 ## Design System
 
 ### Cores
 | Token | Valor | Uso |
 |-------|-------|-----|
-| `--primary` | `#E07A92` (rose-deep) | Ações principais |
+| `--primary` | `#E07A92` (rose-deep) | Ações principais (site) |
 | `--secondary` | `#A8D8C8` (mint) | Ações secundárias |
 | `--background` | `#FDF8F3` (cream) | Fundo da página |
 | `--foreground` | `#2D2D2D` (charcoal) | Texto principal |
@@ -31,7 +33,10 @@
 | `--radius` | `0.75rem` | Arredondamento padrão |
 
 ### Temas
-- `.theme-main` — Rose/mint (site principal, aplicado no `<body>`)
+- `.theme-main` — Rose/mint (site público, aplicado no layout de `(site)`).
+- `.theme-bubblegum` — Pink (painel admin, aplicado no layout de `admin/`).
+
+Ambos os temas vivem em `app/globals.css`.
 
 ### Padrões de Seção
 ```tsx
@@ -75,46 +80,68 @@
 
 ```
 app/
-├── globals.css          # Tailwind + temas + keyframes (275 linhas)
-├── layout.tsx           # Layout raiz do site publico (theme-main, BottomNav)
-├── page.tsx             # Landing page
-├── components/
-│   ├── ui/              # shadcn/ui (12 componentes)
-│   ├── AnnouncementBar.tsx
-│   ├── BottomNav.tsx
-│   ├── CadastroForm.tsx
-│   ├── Footer.tsx
-│   ├── Gallery.tsx
-│   ├── Navbar.tsx
-│   ├── Testimonials.tsx
-│   └── WhatsAppButton.tsx
-├── lib/
-│   ├── cors.ts          # Helpers de CORS para o admin externo
-│   └── db.ts
-├── (shop)/
-│   └── layout.tsx       # theme-main
+├── globals.css          # Tailwind + temas (theme-main e theme-bubblegum)
+├── layout.tsx           # Layout raiz (fontes + body)
+├── (site)/
+│   ├── layout.tsx       # Chrome do site (Navbar, Footer, BottomNav, CartProvider)
+│   ├── page.tsx         # Landing page
+│   └── (shop)/          # produtos, carrinho, checkout, pedido
+├── admin/
+│   ├── layout.tsx       # theme-bubblegum
+│   ├── page.tsx         # redirect /admin → dashboard ou login
+│   ├── login/page.tsx   # Login admin (sem guarda)
+│   └── (protected)/
+│       ├── layout.tsx   # Guarda de sessão + sidebar
+│       ├── dashboard/page.tsx
+│       ├── clientes/page.tsx
+│       ├── produtos/page.tsx
+│       └── pedidos/page.tsx
+├── components/          # Componentes do site
+├── lib/                 # db.ts, cors.ts, shop.ts
 └── api/
-    ├── admin/login/
-    ├── admin/dashboard/
-    ├── pedidos/
-    ├── produtos/
-    ├── clientes/
-    └── init-db/
+    ├── admin/           # API do admin (banco direto, cookie de sessão)
+    ├── produtos/        # GET público (?ativos=true)
+    ├── clientes/        # POST público (newsletter)
+    ├── checkout/        # POST público
+    └── init-db/         # schema
+components/              # AdminSidebar, Admin*.tsx e ui/ (shadcn)
+lib/
+├── server/              # admin-auth, admin-session, admin-mappers, cloudinary
+├── services/            # services do admin (clientes, dashboard, pedidos, produtos, uploads)
+├── http/client.ts       # fetch helper com ApiError
+└── types/admin.ts       # tipos do admin
 ```
 
 ## APIs
 
-| Rota | Método | Descrição |
-|------|--------|-----------|
-| `/api/clientes` | POST | Cadastro de cliente |
-| `/api/clientes` | GET | Lista clientes (requer `x-admin-token`) |
-| `/api/admin/login` | POST | Autenticação do app admin externo |
-| `/api/admin/dashboard` | GET | Métricas do app admin externo |
-| `/api/init-db` | GET | Inicializa tabela no banco |
+| Rota | Método | Auth | Descrição |
+|------|--------|------|-----------|
+| `/api/produtos` | GET | - | Catálogo público (`?ativos=true`) |
+| `/api/clientes` | POST | - | Cadastro de cliente/newsletter |
+| `/api/checkout` | POST | - | Checkout público |
+| `/api/checkout/[id]` | GET | - | Consulta pública do pedido |
+| `/api/init-db` | GET | - | Inicializa tabelas |
+| `/api/admin/login` | POST | - | Login admin (cookie httpOnly) |
+| `/api/admin/logout` | POST | cookie | Logout admin |
+| `/api/admin/session` | GET | cookie | Estado da sessão |
+| `/api/admin/dashboard` | GET | cookie | Métricas do painel |
+| `/api/admin/clientes` | GET/PUT/DELETE | cookie | CRUD clientes |
+| `/api/admin/clientes/[id]/pedidos` | GET | cookie | Pedidos do cliente |
+| `/api/admin/pedidos` | GET/POST/PUT/DELETE | cookie | CRUD pedidos |
+| `/api/admin/pedidos/options` | GET | cookie | Opções do formulário de pedido |
+| `/api/admin/produtos` | GET/POST/PUT/DELETE | cookie | CRUD produtos |
+| `/api/admin/uploads/produtos` | POST | cookie | Upload Cloudinary |
+
+## Sessão Admin
+
+- O admin usa cookie `httpOnly` `infanto_admin_token`, que guarda o `ADMIN_SECRET`.
+- `lib/server/admin-session.ts` expõe `getAdminSessionToken()`, `unauthorizedResponse()` e `withUnauthorizedCookieCleanup()`.
+- Toda rota `/api/admin/*` chama `getAdminSessionToken()` antes de consultar o banco (pool em `app/lib/db.ts`).
+- Ao receber 401, a resposta limpa o cookie e o UI redireciona para `/admin/login`.
 
 ## Notas
 
 - Erro `ECONNREFUSED ::1:5432` no build é esperado — API routes tentam conectar ao PostgreSQL local durante SSG. Ignorar.
 - O projeto não tem testes automatizados. Verificação visual com `npm run dev`.
-- O WhatsApp number padrão é `5569992327118`.
-- O painel admin nao vive mais neste repo; este projeto agora expoe o site publico e a API consumida pelo admin separado.
+- O WhatsApp number padrão é `5569992327118` (ver README).
+- O painel admin vive no mesmo repo; URLs `/admin/*` e API `/api/admin/*`.

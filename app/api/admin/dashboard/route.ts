@@ -1,16 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server'
-import pool from '../../../lib/db'
-import { handleCorsOptions, jsonWithCors } from '../../../lib/cors'
+import { NextResponse } from 'next/server'
 
-export function OPTIONS(req: NextRequest) {
-  return handleCorsOptions(req)
-}
+import pool from '@/app/lib/db'
+import type { DashboardMetricsDto } from '@/lib/server/admin-contracts'
+import { mapDashboardMetrics } from '@/lib/server/admin-mappers'
+import { getAdminSessionToken, unauthorizedResponse } from '@/lib/server/admin-session'
 
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('x-admin-token')
-
-  if (authHeader !== process.env.ADMIN_SECRET) {
-    return jsonWithCors(req, { error: 'Acesso não autorizado.' }, { status: 401 })
+export async function GET() {
+  if (!(await getAdminSessionToken())) {
+    return unauthorizedResponse()
   }
 
   try {
@@ -30,14 +27,16 @@ export async function GET(req: NextRequest) {
       ),
     ])
 
-    return jsonWithCors(req, {
+    const metrics: DashboardMetricsDto = {
       totalClientes: clientesResult.rows[0].total,
       produtosAtivos: produtosAtivosResult.rows[0].total,
       pedidosDoMes: pedidosMesResult.rows[0].total,
       receitaEstimada: parseFloat(receitaResult.rows[0].total),
-    })
+    }
+
+    return NextResponse.json({ metrics: mapDashboardMetrics(metrics) })
   } catch (err) {
     console.error('Erro ao buscar métricas do dashboard:', err)
-    return jsonWithCors(req, { error: 'Erro interno do servidor.' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 })
   }
 }

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import WhatsAppButton from './components/WhatsAppButton'
-import HeroCarousel from './components/HeroCarousel'
+import WhatsAppButton from '@/app/components/WhatsAppButton'
+import HeroCarousel from '@/app/components/HeroCarousel'
 import { Card, CardContent } from '@/components/ui/card'
-import Destaques from './components/Destaques'
+import Destaques from '@/app/components/Destaques'
 
 const WHATSAPP = '556992228016'
 

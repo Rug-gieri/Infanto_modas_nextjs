@@ -144,6 +144,26 @@
   --radius: 0.75rem;
 }
 
+/* ─── Admin Theme (painel — bubblegum pink) ─── */
+.theme-bubblegum {
+  --primary: #ff69b4;
+  --primary-foreground: #ffffff;
+  --secondary: #ffb6c1;
+  --secondary-foreground: #2d2d2d;
+  --background: #fff0f5;
+  --foreground: #2d2d2d;
+  --card: #ffffff;
+  --card-foreground: #2d2d2d;
+  --muted: #ffe4ec;
+  --muted-foreground: #9a8a8a;
+  --accent: #ff85b3;
+  --accent-foreground: #ffffff;
+  --border: #ffd1dc;
+  --input: #ffd1dc;
+  --ring: #ff69b4;
+  --radius: 1rem;
+}
+
 @layer base {
   *,
   *::before,
