@@ -57,7 +57,16 @@ export default function Footer() {
           <p>© {year} Infanto Modas. Todos os direitos reservados.</p>
 
           <p>
-            Feito com carinho —{' '}
+            Feito com carinho por{' '}
+            <a
+              href="https://www.gambit.tec.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-display text-neutral-600 transition-colors hover:text-neutral-950 font-bold"
+            >
+              Gambit
+            </a>{' '}
+            —{' '}
             <a href="#" className="text-neutral-600 transition-colors hover:text-neutral-950">
               Política de Privacidade
             </a>
